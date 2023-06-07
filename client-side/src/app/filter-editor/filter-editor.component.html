@@ -1,0 +1,19 @@
+<div class="filter-editor-container">
+    <div>
+        <pep-button classNames="lock-events" sizeType="xs" iconName="system_move"></pep-button>
+    </div>
+    <div *ngIf="filter.name !== ''" class="title-container">
+        <span class="body-sm ellipsis">{{ index + 1 }}.&nbsp;</span>
+        <span class="body-sm color-link bold ellipsis" title="{{filter.name || 'UNTITLED' | translate}}">{{filter.name || 'UNTITLED' | translate}}</span>
+    </div>
+    <div class="actions" *ngIf="showActions">
+        <pep-button classNames="caution" sizeType="xs" iconName="system_bin" (buttonClick)="onRemoveClick();"></pep-button>
+        <pep-button *ngIf="!isOpen" sizeType="xs" iconName="arrow_down" (buttonClick)="onToggle();"></pep-button>
+        <pep-button *ngIf="isOpen" sizeType="xs" iconName="arrow_up" (buttonClick)="onToggle();"></pep-button>
+    </div>
+    <div class="editor-container" *ngIf="isOpen">
+        <pep-textbox [label]="'FILTER_NAME' | translate" [value]="filter.name" 
+                    (valueChange)="onFilterFieldChange('name', $event)">
+        </pep-textbox>
+    </div>
+</div>

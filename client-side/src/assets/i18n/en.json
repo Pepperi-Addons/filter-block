@@ -1,0 +1,16 @@
+{
+    "Block_Title": "Block title",
+    "GENERAL": "General",
+    "GENERAL_SUB_TITLE": "Assign styles to the filter blocks.",
+    "DIRECTION_TITLE": "Direction",
+    "HORIZONTAL": "Horizontal",
+    "VERTICAL": "Vertical",
+    "SPACING_TITLE": "Spacing",
+    "LIMIT_WIDTH": "Limit filter width",
+    "MAX_WIDTH": "Filter max width (REMs)",
+    "DESIGN": "Design",
+    "UNTITLED": "Untitled",
+    "FILTER_NAME": "Filter name",
+    "FILTERS_SUB_TITLE": "Runs a specific script selected from the script picker. This block produces values to be used as page parameters. This block consumes a page parameter by the key 'Account UUID'.",
+    "ADD_FILTER": "Add filter"
+}

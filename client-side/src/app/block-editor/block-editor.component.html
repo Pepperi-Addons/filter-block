@@ -1,0 +1,41 @@
+<mat-tab-group  #tabGroup class="editor-tabs" animationDuration="0ms">
+    <mat-tab label="{{'GENERAL' | translate}}">
+        <label class="body-sm">{{'GENERAL_SUB_TITLE' | translate}}</label>
+        <div>
+            <pep-checkbox class="checkbox-as-title" [value]="configuration?.limitWidth" [label]="'LIMIT_WIDTH' | translate" [renderTitle]="false" (valueChange)="onFieldChange('limitWidth',$event)"></pep-checkbox>
+        </div>
+        <pep-textbox    type="real"
+                        [disabled]="configuration?.limitWidth" 
+                        [value]="configuration?.maxWidth" 
+                        [label]="'MAX_WIDTH' | translate" 
+                        (valueChange)="onFieldChange('maxWidth', $event)">
+        </pep-textbox>
+                
+        <pep-group-buttons-settings 
+            [groupType]="'custom'" [subHeader]="'DIRECTION_TITLE' | translate"
+            [btnKey]="configuration?.direction" [btnsArray]="directionTypes"
+            (btnkeyChange)="onFieldChange('direction', $event)">
+        </pep-group-buttons-settings>
+        
+        <pep-group-buttons-settings [groupType]="'sizes'"
+            [btnKey]="configuration?.spacing" [excludeKeys]="['xs','xl']"
+            (btnkeyChange)="onFieldChange('spacing', $event)">
+        </pep-group-buttons-settings>
+    </mat-tab>
+    <mat-tab cdkDropListGroup label="{{'DESIGN' | translate}}">
+        <ng-container>
+            <label class="body-sm">{{'FILTERS_SUB_TITLE' | translate}}</label>
+            <div (cdkDropListDropped)="drop($event)" cdkDropList #availableFiltersContainer class="available-filters">
+                <filter-editor *ngFor="let currentFilter of configuration?.filters; let i=index;" class="available-filter"
+                    [index]="i" [showActions]="true" [isDraggable]="true" [filter]="currentFilter"
+                    [isOpen]="i === currentFilterIndex" 
+                    (toggle)='onFilterToggle($event, i);' (removeClick)='onFilterRemoveClick(i);'
+                    (filterChange)='onFilterChange($event, i)'
+                    cdkDrag style="cursor: grab;" (cdkDragStarted)="onDragStart($event)" (cdkDragEnded)="onDragEnd($event)">
+                </filter-editor>
+            </div>
+            <pep-button class="add-content-button" value="{{'ADD_FILTER' | translate}}" styleType="regular" iconName="number_plus" iconPosition="end"
+                    (buttonClick)="addNewFilterClick()" [disabled]="configuration?.filters.length > 10"></pep-button>
+        </ng-container>
+    </mat-tab>
+</mat-tab-group>
