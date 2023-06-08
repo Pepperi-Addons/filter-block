@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewContainerRef } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { PepAddonBlockLoaderService } from '@pepperi-addons/ngx-lib/remote-loader';
 import { IConfig, IFilter } from '../block.model';
 
 @Component({
@@ -19,10 +21,19 @@ export class FilterEditorComponent implements OnInit {
     @Output() removeClick: EventEmitter<void> = new EventEmitter();
     @Output() toggle: EventEmitter<boolean> = new EventEmitter();
 
+    dialogRef: MatDialogRef<any>;
+    dependsOnOptions: Array<{key: string, value: string}> = [];
+
     constructor(
         private translate: TranslateService,
+        private viewContainerRef: ViewContainerRef,
+        private addonBlockLoaderService: PepAddonBlockLoaderService
     ) { 
 
+    }
+
+    private updateFilter() {
+        this.filterChange.emit(this.filter);
     }
 
     ngOnInit(): void {
@@ -43,8 +54,24 @@ export class FilterEditorComponent implements OnInit {
         this.updateFilter();
     }
 
-    private updateFilter() {
-        this.filterChange.emit(this.filter);
-    }
+    openOptionsSourcePickerDialog() {
+        const resource = this.filter.optionsSource || {};
 
+        this.dialogRef = this.addonBlockLoaderService.loadAddonBlockInDialog({
+            container: this.viewContainerRef,
+            name: 'FlowPicker',
+            size: 'large',
+            hostObject: resource,
+            hostEventsCallback: (event) => { 
+                if (event.action === 'on-save') {
+                    this.filter.optionsSource = event.data || {};
+                    this.updateFilter();
+                    
+                    this.dialogRef.close();
+                } else if (event.action === 'close') {
+                    this.dialogRef.close();
+                }
+            }
+        });
+    }
 }

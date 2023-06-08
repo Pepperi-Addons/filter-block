@@ -3,8 +3,6 @@ import { CdkDragDrop, CdkDragEnd, CdkDragStart, moveItemInArray } from '@angular
 import { TranslateService } from '@ngx-translate/core';
 import { PageConfiguration } from '@pepperi-addons/papi-sdk';
 import { IConfig, IFilter } from '../block.model';
-import { PepAddonBlockLoaderService } from '@pepperi-addons/ngx-lib/remote-loader';
-import { MatDialogRef } from '@angular/material/dialog';
 import { PepButton } from '@pepperi-addons/ngx-lib/button';
 
 @Component({
@@ -13,10 +11,7 @@ import { PepButton } from '@pepperi-addons/ngx-lib/button';
     styleUrls: ['./block-editor.component.scss']
 })
 export class BlockEditorComponent implements OnInit {
-    @ViewChild('availableFiltersContainer', { read: ElementRef }) availableBlocksContainer: ElementRef;
-
     @Input()
-    //set hostObject(value: IHostObject) {
     set hostObject(value: any) {
         if (value && value.configuration && Object.keys(value.configuration).length > 0) {
             this._configuration = value.configuration
@@ -44,15 +39,13 @@ export class BlockEditorComponent implements OnInit {
     
     @Output() hostEvents: EventEmitter<any> = new EventEmitter<any>();
     
-    dialogRef: MatDialogRef<any>;
     directionTypes: Array<PepButton> = [];
     
     currentFilterIndex = -1;
 
     constructor(
-        private translate: TranslateService,
-        private viewContainerRef: ViewContainerRef,
-        private addonBlockLoaderService: PepAddonBlockLoaderService) {
+        private translate: TranslateService
+        ) {
     }
 
     private initPageConfiguration(value: PageConfiguration = null) {
@@ -81,45 +74,46 @@ export class BlockEditorComponent implements OnInit {
         });
     }
 
-    // private getVariablesNames(): Array<string> {
-    //     const variablesNames = [];
-    //     for (let index = 0; index < this.configuration.variables.length; index++) {
-    //         const variable = this.configuration.variables[index];
-    //         variablesNames.push(variable.name);
-    //     }
+    private getParametersKeys(): Array<string> {
+        const parametersKeys = [];
+        for (let index = 0; index < this.configuration.filters.length; index++) {
+            const filter = this.configuration.filters[index];
+            if (filter.pageParameterKey) {
+                parametersKeys.push(filter.pageParameterKey);
+            }
+        }
 
-    //     return variablesNames;
-    // }
+        return parametersKeys;
+    }
 
     private updatePageConfigurationObject() {
-        // TODO:
-        // // Get the variables names from the variables.
-        // const variablesNames = this.getVariablesNames();
-        // this.initPageConfiguration();
+        // Get the parameters keys from the filters.
+        const parametersKeys = this.getParametersKeys();
+        this.initPageConfiguration();
 
-        // // Add the parameter to page configuration.
-        // for (let index = 0; index < variablesNames.length; index++) {
-        //     const variableName = variablesNames[index];
+        // Add the parameters to page configuration.
+        for (let index = 0; index < parametersKeys.length; index++) {
+            const parameterKey = parametersKeys[index];
             
-        //     this._pageConfiguration.Parameters.push({
-        //         Key: variableName,
-        //         Type: 'String',
-        //         Consume: false,
-        //         Produce: true
-        //     });
-        // }
+            this._pageConfiguration.Parameters.push({
+                Key: parameterKey,
+                Type: 'String',
+                Consume: false,
+                Produce: true
+            });
+        }
 
-        // this.hostEvents.emit({
-        //     action: 'set-page-configuration',
-        //     pageConfiguration: this._pageConfiguration
-        // });
+        this.hostEvents.emit({
+            action: 'set-page-configuration',
+            pageConfiguration: this._pageConfiguration
+        });
     }
 
     ngOnInit(): void {
         this.translate.get('HORIZONTAL').subscribe((res: string) => { 
             this.directionTypes = [
-                { key: 'horizontal', value: this.translate.instant('HORIZONTAL')},//, callback: (event: any) => this.onFieldChange('controllersDisplay',event) },
-                { key: 'vertical', value: this.translate.instant('VERTICAL')}//, callback: (event: any) => this.onFieldChange('controllersDisplay',event) }
+                { key: 'horizontal', value: this.translate.instant('HORIZONTAL')}, //, callback: (event: any) => this.onFieldChange('direction',event) },
+                { key: 'vertical', value: this.translate.instant('VERTICAL')}//, callback: (event: any) => this.onFieldChange('direction',event) }
             ]
         });
     }
@@ -154,39 +148,9 @@ export class BlockEditorComponent implements OnInit {
 
     onFieldChange(key, event){
         const value = event && event.source && event.source.key ? event.source.key : event && event.source && event.source.value ? event.source.value :  event;
-       
-        // if(key.indexOf('.') > -1){
-        //     let keyObj = key.split('.');
-        //     this.configuration[keyObj[0]][keyObj[1]] = value;
-        // }
-        // else {
-            this.configuration[key] = value;
-        // }
-        
+        this.configuration[key] = value;
         this.updateHostObject();
-        // this.updateHostObjectField(`${key}`, value);
     }
-
-    // openScriptPickerDialog() {
-    //     const script = this.configuration.script || {};
-
-    //     this.dialogRef = this.addonBlockLoaderService.loadAddonBlockInDialog({
-    //         container: this.viewContainerRef,
-    //         name: 'ScriptPicker',
-    //         size: 'large',
-    //         hostObject: script,
-    //         hostEventsCallback: (event) => { 
-    //             if (event.action === 'script-picked') {
-    //                 this.configuration.script = event.data || {};
-    //                 this.updateHostObject();
-                    
-    //                 this.dialogRef.close();
-    //             } else if (event.action === 'close') {
-    //                 this.dialogRef.close();
-    //             }
-    //         }
-    //     });
-    // }
 
     drop(event: CdkDragDrop<string[]>) {
         if (event.previousContainer === event.container) {

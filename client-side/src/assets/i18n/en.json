@@ -1,6 +1,6 @@
 {
     "Block_Title": "Block title",
-    "GENERAL": "General",
+    "GENERAL_TAB_TITLE": "General",
     "GENERAL_SUB_TITLE": "Assign styles to the filter blocks.",
     "DIRECTION_TITLE": "Direction",
     "HORIZONTAL": "Horizontal",
@@ -8,9 +8,17 @@
     "SPACING_TITLE": "Spacing",
     "LIMIT_WIDTH": "Limit filter width",
     "MAX_WIDTH": "Filter max width (REMs)",
-    "DESIGN": "Design",
+    "CONTENT_TAB_TITLE": "Content",
     "UNTITLED": "Untitled",
-    "FILTER_NAME": "Filter name",
     "FILTERS_SUB_TITLE": "Runs a specific script selected from the script picker. This block produces values to be used as page parameters. This block consumes a page parameter by the key 'Account UUID'.",
+    "TITLE": "title",
+    "PAGE_PARAMETER_KEY_TITLE": "Page parameter key",
+    "DEPENDS_ON_TITLE": "Depends on",
+    "OPTIONS_SOURCE_TITLE": "Options source",
+    "CHOOSE_OPTIONS_SOURCE": "Choose options source",
+    "USE_FIRST_VALUE_TITLE": "Use first value",
+    "USE_FIRST_VALUE_SUB_TITLE": "When the value for this filter is not set, it will use the first option as default.",
+    "PLACEHOLDER_TITLE": "Or use a placeholder text",
+    "PLACEHOLDER_WHEN_NO_OPTIONS_TITLE": "Empty values text",
     "ADD_FILTER": "Add filter"
 }

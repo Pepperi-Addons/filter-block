@@ -1,10 +1,10 @@
-<div class="filter-editor-container">
+<div class="filter-editor-container" >
     <div>
         <pep-button classNames="lock-events" sizeType="xs" iconName="system_move"></pep-button>
     </div>
-    <div *ngIf="filter.name !== ''" class="title-container">
+    <div class="title-container">
         <span class="body-sm ellipsis">{{ index + 1 }}.&nbsp;</span>
-        <span class="body-sm color-link bold ellipsis" title="{{filter.name || 'UNTITLED' | translate}}">{{filter.name || 'UNTITLED' | translate}}</span>
+        <span class="body-sm color-link bold ellipsis" title="{{filter.title || 'UNTITLED' | translate}}">{{filter.title || 'UNTITLED' | translate}}</span>
     </div>
     <div class="actions" *ngIf="showActions">
         <pep-button classNames="caution" sizeType="xs" iconName="system_bin" (buttonClick)="onRemoveClick();"></pep-button>
@@ -12,8 +12,37 @@
         <pep-button *ngIf="isOpen" sizeType="xs" iconName="arrow_up" (buttonClick)="onToggle();"></pep-button>
     </div>
     <div class="editor-container" *ngIf="isOpen">
-        <pep-textbox [label]="'FILTER_NAME' | translate" [value]="filter.name" 
-                    (valueChange)="onFilterFieldChange('name', $event)">
+        <pep-textbox [label]="'TITLE' | translate" [value]="filter.title" 
+                    (valueChange)="onFilterFieldChange('title', $event)">
+        </pep-textbox>
+
+        <pep-textbox [label]="'PAGE_PARAMETER_KEY_TITLE' | translate" [value]="filter.pageParameterKey"
+                    (valueChange)="onFilterFieldChange('pageParameterKey', $event)">
+        </pep-textbox>
+
+        <pep-select [label]="'DEPENDS_ON_TITLE' | translate" [value]="filter.dependsOn" [placeholder]="''" type="multi" [options]="dependsOnOptions"
+            (valueChange)="onFilterFieldChange('dependsOn', $event)" [emptyOption]="false" ></pep-select>
+
+        <div>
+            <pep-field-title [label]="'OPTIONS_SOURCE_TITLE' | translate"></pep-field-title>
+            <pep-button class="script-button" 
+                [value]="filter?.optionsSource?.runFlowData?.FlowKey ? filter?.optionsSource?.runFlowData?.FlowKey : ('CHOOSE_OPTIONS_SOURCE' | translate)" 
+                (buttonClick)="openOptionsSourcePickerDialog();">
+            </pep-button>
+        </div>
+
+        <pep-textbox [label]="'PLACEHOLDER_WHEN_NO_OPTIONS_TITLE' | translate" [value]="filter.placeholderWhenNoOptions" 
+                    (valueChange)="onFilterFieldChange('placeholderWhenNoOptions', $event)">
+        </pep-textbox>
+
+        <div>
+            <pep-checkbox class="checkbox-as-title" [value]="filter.useFirstValue" [label]="'USE_FIRST_VALUE_TITLE' | translate" [renderTitle]="false"
+                (valueChange)="onFilterFieldChange('useFirstValue', $event)"></pep-checkbox>
+            <span class="header-title body-xs checkbox-description">{{('USE_FIRST_VALUE_SUB_TITLE' | translate)}}</span>
+        </div>
+
+        <pep-textbox [label]="'PLACEHOLDER_TITLE' | translate" [value]="filter.placeholder" [disabled]="filter.useFirstValue"
+                    (valueChange)="onFilterFieldChange('placeholder', $event)">
         </pep-textbox>
     </div>
 </div>

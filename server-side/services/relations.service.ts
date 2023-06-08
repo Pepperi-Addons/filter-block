@@ -49,7 +49,7 @@ export class RelationsService {
                         "Items": {
                             "Type": "Object",
                             "Fields": {
-                                "name": {
+                                "title": {
                                     "Type": "String",
                                     "ConfigurationPerScreenSize": false,
                                 },
@@ -57,22 +57,22 @@ export class RelationsService {
                                     "Type": "String",
                                     "ConfigurationPerScreenSize": false,
                                 },
-                                "resource": {
-                                    "Type": "Object"
-                                },
                                 "dependsOn": {
                                     "Type": "String",
                                     "ConfigurationPerScreenSize": false,
                                 },
-                                "title": {
-                                    "Type": "String",
-                                    "ConfigurationPerScreenSize": false,
+                                "optionsSource": {
+                                    "Type": "Object"
                                 },
                                 "useFirstValue": {
                                     "Type": "Boolean",
                                     "ConfigurationPerScreenSize": false,
                                 },
                                 "placeholder": {
+                                    "Type": "String",
+                                    "ConfigurationPerScreenSize": false,
+                                },
+                                "placeholderWhenNoOptions": {
                                     "Type": "String",
                                     "ConfigurationPerScreenSize": false,
                                 },

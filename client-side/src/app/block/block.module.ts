@@ -4,11 +4,12 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
 
-import { PepAddonService } from '@pepperi-addons/ngx-lib';
+import { PepAddonService, PepNgxLibModule } from '@pepperi-addons/ngx-lib';
 
 import { BlockComponent } from './index';
 
 import { config } from '../app.config';
+import { PepSelectModule } from '@pepperi-addons/ngx-lib/select';
 
 export const routes: Routes = [
     {
@@ -21,6 +22,8 @@ export const routes: Routes = [
     declarations: [BlockComponent],
     imports: [
         CommonModule,
+        PepSelectModule,
+        PepNgxLibModule,
         TranslateModule.forChild({
             loader: {
                 provide: TranslateLoader,

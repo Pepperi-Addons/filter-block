@@ -11,6 +11,9 @@ import { config } from '../app.config';
 import { PepButtonModule } from '@pepperi-addons/ngx-lib/button';
 import { PepSelectModule } from '@pepperi-addons/ngx-lib/select';
 import { PepCheckboxModule } from '@pepperi-addons/ngx-lib/checkbox';
+import { PepRemoteLoaderModule } from '@pepperi-addons/ngx-lib/remote-loader';
+import { MatDialogModule } from '@angular/material/dialog';
+import { PepFieldTitleModule } from '@pepperi-addons/ngx-lib/field-title';
 
 const pepIcons = [
     pepIconTextAlignCenter, 
@@ -35,11 +38,14 @@ const pepIcons = [
     imports: [
         CommonModule,
         DragDropModule,
+        MatDialogModule,
         PepButtonModule,
         PepTextboxModule,
         PepSelectModule,
+        PepFieldTitleModule,
         PepCheckboxModule,
         PepNgxLibModule,
+        PepRemoteLoaderModule,
         TranslateModule.forChild({
             loader: {
                 provide: TranslateLoader,
