@@ -30,7 +30,7 @@
         "@ngx-translate/http-loader": "^7.0.0",
         "@pepperi-addons/data-views": "0.0.2",
         "@pepperi-addons/ngx-composite-lib": "^0.4.2-beta.4",
-        "@pepperi-addons/ngx-lib": "^0.4.2-beta.80",
+        "@pepperi-addons/ngx-lib": "^0.4.2-beta.102",
         "@pepperi-addons/papi-sdk": "^1.34.0",
         "@tweenjs/tween.js": "^17.1.1",
         "hammerjs": "^2.0.8",
@@ -70,6 +70,7 @@
         "serve": "^11.3.2",
         "ts-node": "~8.3.0",
         "tslint": "~6.1.0",
-        "typescript": "~4.7.3"
+        "typescript": "~4.7.3",
+        "shared": "file:../shared"
     }
 }

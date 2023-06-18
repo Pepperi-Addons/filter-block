@@ -1,8 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewContainerRef } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { IPepOption } from '@pepperi-addons/ngx-lib';
 import { PepAddonBlockLoaderService } from '@pepperi-addons/ngx-lib/remote-loader';
-import { IConfig, IFilter } from '../block.model';
+import { IConfig } from '../block.model';
+import { FiltersBlockService } from '../services/filters-block.service';
+import { IFilter } from 'shared';
 
 @Component({
     selector: 'filter-editor',
@@ -22,12 +25,13 @@ export class FilterEditorComponent implements OnInit {
     @Output() toggle: EventEmitter<boolean> = new EventEmitter();
 
     dialogRef: MatDialogRef<any>;
-    dependsOnOptions: Array<{key: string, value: string}> = [];
+    dependsOnOptions: Array<IPepOption> = [];
 
     constructor(
         private translate: TranslateService,
         private viewContainerRef: ViewContainerRef,
-        private addonBlockLoaderService: PepAddonBlockLoaderService
+        private addonBlockLoaderService: PepAddonBlockLoaderService,
+        private filtersBlockService: FiltersBlockService
     ) { 
 
     }
@@ -37,7 +41,9 @@ export class FilterEditorComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        
+        this.filtersBlockService.dependsOnOptionsSubject$.subscribe((options) => {
+            this.dependsOnOptions = options;
+        });
     }
 
     onRemoveClick() {
@@ -55,20 +61,36 @@ export class FilterEditorComponent implements OnInit {
     }
 
     openOptionsSourcePickerDialog() {
-        const resource = this.filter.optionsSource || {};
+        const resource = {};
+        const runFlowData = this.filter.optionsSource || {};
+
+        const fields = {};
+        if (this.filter.dependsOn.length > 0) {
+            const paramsKeys = this.filter.dependsOn.split(';');
+
+            for (let index = 0; index < paramsKeys.length; index++) {
+                const paramKey = paramsKeys[index];
+                fields[paramKey] = {
+                    Type: this.filtersBlockService.pageParameters.get(paramKey)?.Type || 'String'
+                }                
+            }
+        }
+        
+        resource['runFlowData'] = runFlowData;
+        resource['fields'] = fields;
 
         this.dialogRef = this.addonBlockLoaderService.loadAddonBlockInDialog({
             container: this.viewContainerRef,
             name: 'FlowPicker',
             size: 'large',
             hostObject: resource,
-            hostEventsCallback: (event) => { 
-                if (event.action === 'on-save') {
+            hostEventsCallback: (event) => {
+                if (event.action === 'on-done') {
                     this.filter.optionsSource = event.data || {};
                     this.updateFilter();
                     
                     this.dialogRef.close();
-                } else if (event.action === 'close') {
+                } else if (event.action === 'on-cancel') {
                     this.dialogRef.close();
                 }
             }

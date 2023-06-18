@@ -1,21 +1,4 @@
-import { IPepOption } from "@pepperi-addons/ngx-lib";
-
-export class IFilter {
-    title: string = '';
-    pageParameterKey: string = '';
-    dependsOn: string = ''; // list of all page parameters from the page (multi choise)
-    optionsSource: any = {};
-    useFirstValue: boolean = false;
-    placeholder: string = '';
-    placeholderWhenNoOptions: string = '';
-}
-
-export class ICalculatedFilter extends IFilter {
-    // Calculated fields
-    options?: Array<IPepOption> = [];
-    disabled?: boolean = false;
-    value?: string = '';
-}
+import { IFilter } from "shared";
 
 export interface IConfig {
     filters: Array<IFilter>;
@@ -28,5 +11,6 @@ export interface IConfig {
 export interface IHostObject {
     configuration: IConfig;
     pageConfiguration: any;
+    pageParameters: any;
     parameters: any;
 }

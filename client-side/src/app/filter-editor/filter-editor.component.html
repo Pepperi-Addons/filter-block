@@ -26,7 +26,7 @@
         <div>
             <pep-field-title [label]="'OPTIONS_SOURCE_TITLE' | translate"></pep-field-title>
             <pep-button class="script-button" 
-                [value]="filter?.optionsSource?.runFlowData?.FlowKey ? filter?.optionsSource?.runFlowData?.FlowKey : ('CHOOSE_OPTIONS_SOURCE' | translate)" 
+                [value]="filter.optionsSource?.FlowKey || ('CHOOSE_OPTIONS_SOURCE' | translate)" 
                 (buttonClick)="openOptionsSourcePickerDialog();">
             </pep-button>
         </div>
