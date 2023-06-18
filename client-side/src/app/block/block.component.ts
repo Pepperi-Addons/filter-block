@@ -73,8 +73,11 @@ export class BlockComponent implements OnInit {
             
             for (let index = 0; index < calculatedFilters.length; index++) {
                 const calculatedFilter = calculatedFilters[index];
-                if (calculatedFilter.useFirstValue) {
-                    this.setPageParameterValue(calculatedFilter.pageParameterKey, calculatedFilter.value);
+                if (calculatedFilter.useFirstValue && calculatedFilter.value !== '') {
+                    // Check that the value of this parameter is not calculatedFilter.value
+                    if (this._parameters[calculatedFilter.pageParameterKey] !== calculatedFilter.value) {
+                        this.setPageParameterValue(calculatedFilter.pageParameterKey, calculatedFilter.value);
+                    }
                 }
             }
 

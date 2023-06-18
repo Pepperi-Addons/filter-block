@@ -140,13 +140,21 @@ export class BlockEditorComponent implements OnInit {
         // Add the parameters to page configuration.
         for (let index = 0; index < params.length; index++) {
             const parameterKey = params[index];
-            
-            this._pageConfiguration.Parameters.push({
-                Key: parameterKey,
-                Type: 'String',
-                Consume: isConsume,
-                Produce: isProduce
-            });
+            const paramIndex = this._pageConfiguration.Parameters.findIndex(param => param.Key === parameterKey);
+
+            // If the parameter exist, update the consume/produce.
+            if (paramIndex >= 0) {
+                this._pageConfiguration.Parameters[paramIndex].Consume = this._pageConfiguration.Parameters[paramIndex].Consume || isConsume;
+                this._pageConfiguration.Parameters[paramIndex].Produce = this._pageConfiguration.Parameters[paramIndex].Produce || isProduce;
+            } else {
+                // Add the parameter only if not exist.
+                this._pageConfiguration.Parameters.push({
+                    Key: parameterKey,
+                    Type: 'String',
+                    Consume: isConsume,
+                    Produce: isProduce
+                });
+            }
         }
     }
 

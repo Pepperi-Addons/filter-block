@@ -65,7 +65,7 @@ class FiltersService {
         const hasOptions = calculatedFilter.options?.length > 0;
         calculatedFilter.disabled = !hasOptions;
 
-        // If this parameter has value in the page parameters and exist in the options, use it.
+        // If this parameter (from page parameters) has value and it exist in the options, use it.
         if (parameters.hasOwnProperty(filter.pageParameterKey) && hasOptions && calculatedFilter.options.some(option => option.key === parameters[filter.pageParameterKey])) {
             calculatedFilter.value = parameters[filter.pageParameterKey];
         } else if (calculatedFilter.options?.length > 0) {
