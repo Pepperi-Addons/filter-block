@@ -4,40 +4,47 @@ import { RunFlowBody } from '@pepperi-addons/cpi-node';
 class FiltersService {
 
     private async getOptionsFromFlow(filter: IFilter, parameters: any, eventData: any): Promise<Array<{ Key: string, Title: string }>> {
-        const dynamicParamsData: any = {};
-        
-        if (filter.optionsSource?.FlowKey?.length > 0 && filter.optionsSource?.FlowParams) {
-            const dynamicParams: any = [];
+        const res: any = { Options: [] };
 
-            // Get all dynamic parameters to set their value on the data property later.
-            const keysArr = Object.keys(filter.optionsSource.FlowParams);
-            for (let index = 0; index < keysArr.length; index++) {
-                const key = keysArr[index];
+        if (filter.optionsSource?.FlowKey?.length > 0) {
+            const dynamicParamsData: any = {};
+            
+            if (filter.optionsSource?.FlowParams) {
+                const dynamicParams: any = [];
+
+                // Get all dynamic parameters to set their value on the data property later.
+                const keysArr = Object.keys(filter.optionsSource.FlowParams);
+                for (let index = 0; index < keysArr.length; index++) {
+                    const key = keysArr[index];
+                    
+                    if (filter.optionsSource.FlowParams[key].Source === 'Dynamic') {
+                        dynamicParams.push(filter.optionsSource.FlowParams[key].Value);
+                    }
+                }
                 
-                if (filter.optionsSource.FlowParams[key].Source === 'Dynamic') {
-                    dynamicParams.push(filter.optionsSource.FlowParams[key].Value);
+                // Set the dynamic parameters values on the dynamicParamsData property.
+                for (let index = 0; index < dynamicParams.length; index++) {
+                    const param = dynamicParams[index];
+                    dynamicParamsData[param] = parameters[param] || '';
                 }
             }
-            
-            // Set the dynamic parameters values on the dynamicParamsData property.
-            for (let index = 0; index < dynamicParams.length; index++) {
-                const param = dynamicParams[index];
-                dynamicParamsData[param] = parameters[param] || '';
+        
+            const flowToRun: RunFlowBody = {
+                RunFlow: filter.optionsSource,
+                Data: dynamicParamsData,
+            };
+
+            // TODO: Remove one of the context properties.
+            if (eventData.client?.context) {
+                flowToRun['context'] = eventData;
+                flowToRun['Context'] = eventData;
             }
+
+            // Run the flow and return the options.
+            const flowRes = await pepperi.flows.run(flowToRun);
+            res.Options = flowRes?.Options || [];
         }
 
-        const flowToRun: RunFlowBody = {
-            RunFlow: filter.optionsSource,
-            Data: dynamicParamsData,
-        };
-
-        if (eventData.client?.context) {
-            flowToRun['context'] = eventData;
-            flowToRun['Context'] = eventData;
-        }
-
-        // Run the flow and return the options.
-        const res = await pepperi.flows.run(flowToRun) || { Options: [] };
         return res.Options;
     }
 

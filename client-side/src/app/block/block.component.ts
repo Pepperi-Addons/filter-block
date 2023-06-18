@@ -13,9 +13,9 @@ import { IFilter, ICalculatedFilter, ICalculatedFiltersEventResult } from 'share
 export class BlockComponent implements OnInit {
     @Input()
     set hostObject(value: IHostObject) {
-        const consumeParameterChanged = JSON.stringify(this._parameters) !== JSON.stringify(value.parameters);
-        const filtersChanged = JSON.stringify(this._configuration.filters) !== JSON.stringify(value.configuration.filters);
         const isFirstLoad = this._configuration === undefined;
+        const consumeParameterChanged = JSON.stringify(this._parameters) !== JSON.stringify(value.parameters);
+        const filtersChanged = JSON.stringify(this._configuration?.filters) !== JSON.stringify(value.configuration?.filters);
 
         this._configuration = value?.configuration;
         this._pageConfiguration = value?.pageConfiguration;
@@ -53,7 +53,6 @@ export class BlockComponent implements OnInit {
     }
 
     // This subject is for load the calculated filters with the options.
-    private _calculatedFilters: Array<ICalculatedFilter> = [];
     private _calculatedFiltersSubject: BehaviorSubject<Array<ICalculatedFilter>> = new BehaviorSubject<Array<ICalculatedFilter>>([]);
     get calculatedFiltersSubject$(): Observable<Array<ICalculatedFilter>> {
         return this._calculatedFiltersSubject.asObservable().pipe(distinctUntilChanged());
@@ -69,52 +68,59 @@ export class BlockComponent implements OnInit {
     }
 
     private setCalculatedFiltersFromEvent(eventResult: ICalculatedFiltersEventResult) {
-        if (eventResult.Success) {
-            this._calculatedFilters = eventResult.CalculatedFilters;
-
-            for (let index = 0; index < this._calculatedFilters.length; index++) {
-                const calculatedFilter = this._calculatedFilters[index];
+        if (eventResult?.Success && eventResult.CalculatedFilters?.length > 0) {
+            const calculatedFilters: Array<ICalculatedFilter> = eventResult.CalculatedFilters;
+            
+            for (let index = 0; index < calculatedFilters.length; index++) {
+                const calculatedFilter = calculatedFilters[index];
                 if (calculatedFilter.useFirstValue) {
                     this.setPageParameterValue(calculatedFilter.pageParameterKey, calculatedFilter.value);
                 }
             }
 
             // Refresh all the calculated filters for let the options refresh.
-            this.notifyCalculatedFiltersChange(this._calculatedFilters);
+            this.notifyCalculatedFiltersChange(calculatedFilters);
         } else {
             // TODO: Show error message.
         }
     }
 
     private getEventData() {
-        return {
+        const res = {
             filters: this.configuration.filters,
             parameters: { ...this.pageParameters, ...this.parameters },
         };
+        return res;
     }
 
     private onClientFiltersBlockLoad() {
-        // run the flow.
-        this.hostEvents.emit({
-            action: 'emit-event',
-            eventKey: 'OnClientFiltersBlockLoad',
-            eventData: this.getEventData(),
-            completion: (eventResult: ICalculatedFiltersEventResult) => {
-                this.setCalculatedFiltersFromEvent(eventResult);
-            }
-        });
+        if (this.configuration?.filters?.length > 0) {
+            this.hostEvents.emit({
+                action: 'emit-event',
+                eventKey: 'OnClientFiltersBlockLoad',
+                eventData: this.getEventData(),
+                completion: (eventResult: ICalculatedFiltersEventResult) => {
+                    this.setCalculatedFiltersFromEvent(eventResult);
+                }
+            });
+        } else {
+            this.notifyCalculatedFiltersChange([]);
+        }
     }
 
     private onClientFiltersBlockChange() {
-        // run the flow.
-        this.hostEvents.emit({
-            action: 'emit-event',
-            eventKey: 'OnConsumeParameterChange',
-            eventData: this.getEventData(),
-            completion: (eventResult: ICalculatedFiltersEventResult) => {
-                this.setCalculatedFiltersFromEvent(eventResult);
-            }
-        });
+        if (this.configuration?.filters?.length > 0) {
+            this.hostEvents.emit({
+                action: 'emit-event',
+                eventKey: 'OnConsumeParameterChange',
+                eventData: this.getEventData(),
+                completion: (eventResult: ICalculatedFiltersEventResult) => {
+                    this.setCalculatedFiltersFromEvent(eventResult);
+                }
+            });
+        } else {
+            this.notifyCalculatedFiltersChange([]);
+        }
     }
 
     ngOnInit(): void {

@@ -1,28 +1,59 @@
 import '@pepperi-addons/cpi-node'
+import { ICalculatedFilter, ICalculatedFiltersEventResult } from 'shared';
 import FiltersService from './filters.service';
 
 export async function load(configuration: any) {
 
-    pepperi.events.intercept("OnClientFiltersBlockLoad" as any, {}, async (data): Promise<any> => {
-        console.log(`OnClientFiltersBlockLoad -> before`);
-        
-        const service = new FiltersService();
-        const res = await service.PrepareFiltersData(data);
+    pepperi.events.intercept("OnClientFiltersBlockLoad" as any, {}, async (data): Promise<ICalculatedFiltersEventResult> => {
+        // debugger;
+        let success = true;
+        let calculatedFilters:Array<ICalculatedFilter> = [];
+        let error: any;
 
-        console.log(`OnClientFiltersBlockLoad -> after`);
+        try {
+            console.log(`OnClientFiltersBlockLoad -> before`);
+            
+            const service = new FiltersService();
+            calculatedFilters = await service.PrepareFiltersData(data);
 
-        return res;
+            console.log(`OnClientFiltersBlockLoad -> after`);
+        } catch (err) {
+            success = false;
+            error = err;
+            console.error(`OnClientFiltersBlockLoad -> error: ${err}`);
+        }
+
+        return {
+            CalculatedFilters: calculatedFilters,
+            Success: success,
+            Error: error,
+        };
     });
 
-    pepperi.events.intercept("OnConsumeParameterChange" as any, {}, async (data): Promise<any> => {
-        console.log(`OnConsumeParameterChange -> before`);
-        
-        const service = new FiltersService();
-        const res = await service.PrepareFiltersData(data);
+    pepperi.events.intercept("OnConsumeParameterChange" as any, {}, async (data): Promise<ICalculatedFiltersEventResult> => {
+        // debugger;
+        let success = true;
+        let calculatedFilters:Array<ICalculatedFilter> = [];
+        let error: any;
 
-        console.log(`OnConsumeParameterChange -> after`);
+        try {
+            console.log(`OnConsumeParameterChange -> before`);
+            
+            const service = new FiltersService();
+            const res = await service.PrepareFiltersData(data);
 
-        return res;
+            console.log(`OnConsumeParameterChange -> after`);
+        } catch (err) {
+            success = false;
+            error = err;
+            console.error(`OnConsumeParameterChange -> error: ${err}`);
+        }
+
+        return {
+            CalculatedFilters: calculatedFilters,
+            Success: success,
+            Error: error,
+        };
     });
 }
 

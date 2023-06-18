@@ -173,6 +173,7 @@ export class BlockEditorComponent implements OnInit {
             pageConfiguration: this._pageConfiguration
         });
     }
+
     ngOnInit(): void {
         this.translate.get('HORIZONTAL').subscribe((res: string) => { 
             this.directionTypes = [
