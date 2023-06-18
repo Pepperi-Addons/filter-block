@@ -40,7 +40,7 @@ export async function load(configuration: any) {
             console.log(`OnConsumeParameterChange -> before`);
             
             const service = new FiltersService();
-            const res = await service.PrepareFiltersData(data);
+            calculatedFilters = await service.PrepareFiltersData(data);
 
             console.log(`OnConsumeParameterChange -> after`);
         } catch (err) {

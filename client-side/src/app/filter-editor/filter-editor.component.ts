@@ -56,8 +56,11 @@ export class FilterEditorComponent implements OnInit {
 
     onFilterFieldChange(key, event) {
         const value = event && event.source && event.source.key ? event.source.key : event && event.source && event.source.value ? event.source.value : event;
-        this.filter[key] = value;
-        this.updateFilter();
+        
+        if (this.filter[key] !== value) {
+            this.filter[key] = value;
+            this.updateFilter();
+        }
     }
 
     openOptionsSourcePickerDialog() {

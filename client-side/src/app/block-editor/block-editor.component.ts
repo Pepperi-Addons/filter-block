@@ -129,7 +129,7 @@ export class BlockEditorComponent implements OnInit {
         for (let index = 0; index < this.configuration.filters.length; index++) {
             const filter = this.configuration.filters[index];
             if (filter.dependsOn.length > 0) {
-                parametersKeys.push(...filter.dependsOn.split(','));
+                parametersKeys.push(...filter.dependsOn.split(';'));
             }
         }
 

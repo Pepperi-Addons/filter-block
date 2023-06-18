@@ -68,7 +68,7 @@ export class BlockComponent implements OnInit {
     }
 
     private setCalculatedFiltersFromEvent(eventResult: ICalculatedFiltersEventResult) {
-        if (eventResult?.Success && eventResult.CalculatedFilters?.length > 0) {
+        if (eventResult?.Success) {
             const calculatedFilters: Array<ICalculatedFilter> = eventResult.CalculatedFilters;
             
             for (let index = 0; index < calculatedFilters.length; index++) {
