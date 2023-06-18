@@ -3,8 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { IConfig, IHostObject } from '../block.model';
 import { IPepOption, PepAddonService } from '@pepperi-addons/ngx-lib';
 import { BehaviorSubject, distinctUntilChanged, Observable } from "rxjs";
-import { IFilter, ICalculatedFilter } from 'shared';
-
+import { IFilter, ICalculatedFilter, ICalculatedFiltersEventResult } from 'shared';
 
 @Component({
     selector: 'page-block',
@@ -54,10 +53,10 @@ export class BlockComponent implements OnInit {
     }
 
     // This subject is for load the calculated filters with the options.
-    private _calculateFilters: Array<ICalculatedFilter> = [];
-    private _calculateFiltersSubject: BehaviorSubject<Array<ICalculatedFilter>> = new BehaviorSubject<Array<ICalculatedFilter>>([]);
-    get calculateFiltersSubject$(): Observable<Array<ICalculatedFilter>> {
-        return this._calculateFiltersSubject.asObservable().pipe(distinctUntilChanged());
+    private _calculatedFilters: Array<ICalculatedFilter> = [];
+    private _calculatedFiltersSubject: BehaviorSubject<Array<ICalculatedFilter>> = new BehaviorSubject<Array<ICalculatedFilter>>([]);
+    get calculatedFiltersSubject$(): Observable<Array<ICalculatedFilter>> {
+        return this._calculatedFiltersSubject.asObservable().pipe(distinctUntilChanged());
     }
 
     constructor(
@@ -66,12 +65,25 @@ export class BlockComponent implements OnInit {
     }
 
     private notifyCalculatedFiltersChange(value: Array<ICalculatedFilter>) {
-        this._calculateFiltersSubject.next(value);
+        this._calculatedFiltersSubject.next(value);
     }
 
-    private buildCalculatedFilters(eventResult: any) {
-        // Refresh all the calculated filters for let the options refresh.
-        this.notifyCalculatedFiltersChange(this._calculateFilters);
+    private setCalculatedFiltersFromEvent(eventResult: ICalculatedFiltersEventResult) {
+        if (eventResult.Success) {
+            this._calculatedFilters = eventResult.CalculatedFilters;
+
+            for (let index = 0; index < this._calculatedFilters.length; index++) {
+                const calculatedFilter = this._calculatedFilters[index];
+                if (calculatedFilter.useFirstValue) {
+                    this.setPageParameterValue(calculatedFilter.pageParameterKey, calculatedFilter.value);
+                }
+            }
+
+            // Refresh all the calculated filters for let the options refresh.
+            this.notifyCalculatedFiltersChange(this._calculatedFilters);
+        } else {
+            // TODO: Show error message.
+        }
     }
 
     private getEventData() {
@@ -87,8 +99,8 @@ export class BlockComponent implements OnInit {
             action: 'emit-event',
             eventKey: 'OnClientFiltersBlockLoad',
             eventData: this.getEventData(),
-            completion: (eventResult) => {
-                this.buildCalculatedFilters(eventResult);
+            completion: (eventResult: ICalculatedFiltersEventResult) => {
+                this.setCalculatedFiltersFromEvent(eventResult);
             }
         });
     }
@@ -99,107 +111,10 @@ export class BlockComponent implements OnInit {
             action: 'emit-event',
             eventKey: 'OnConsumeParameterChange',
             eventData: this.getEventData(),
-            completion: (eventResult) => {
-                this.buildCalculatedFilters(eventResult);
+            completion: (eventResult: ICalculatedFiltersEventResult) => {
+                this.setCalculatedFiltersFromEvent(eventResult);
             }
         });
-    }
-
-
-    // private prepareFiltersData() {
-    //     this._calculateFilters = [];
-        
-    //     for (let index = 0; index < this.configuration.filters.length; index++) {
-    //         const filter = this.configuration.filters[index];
-            
-    //         const calculatedFilter: ICalculatedFilter = {...filter};
-    //         this.loadFilterOptions(filter, calculatedFilter);
-            
-    //         this._calculateFilters.push(calculatedFilter);
-    //     }
-
-    //     this.notifyCalculatedFiltersChange(this._calculateFilters);
-    // }
-
-    // private loadFilterOptions(filter: IFilter, calculatedFilter: ICalculatedFilter) {
-    //     calculatedFilter.options = [];
-
-    //     if (filter.optionsSource?.FlowKey?.length > 0) {
-    //         const dynamicParamsData = {};
-            
-    //         if (filter.optionsSource.FlowParams) {
-    //             const dynamicParams = [];
-
-    //             // Get all dynamic parameters to set their value on the data property later.
-    //             const keysArr = Object.keys(filter.optionsSource.FlowParams);
-    //             for (let index = 0; index < keysArr.length; index++) {
-    //                 const key = keysArr[index];
-                    
-    //                 if (filter.optionsSource.FlowParams[key].Source === 'Dynamic') {
-    //                     dynamicParams.push(filter.optionsSource.FlowParams[key].Value);
-    //                 }
-    //             }
-                
-    //             // Set the dynamic parameters values on the data property.
-    //             for (let index = 0; index < dynamicParams.length; index++) {
-    //                 const param = dynamicParams[index];
-    //                 dynamicParamsData[param] = this.parameters[param] || this.pageParameters[param] || '';
-    //             }
-    //         }
-        
-    //         // setTimeout(async () => {
-    //             const runFlowData = {
-    //                 optionsSource: filter.optionsSource,
-    //                 dynamicParamsData: dynamicParamsData
-    //             };
-                
-    //             // run the flow.
-    //             this.hostEvents.emit({
-    //                 action: 'emit-event',
-    //                 eventKey: 'RunFilterFlow',
-    //                 eventData: runFlowData,
-    //                 completion: (eventResult) => {
-    //                     // debugger;
-    //                     // Set the filter options
-    //                     const options = new Array<IPepOption>();
-    //                     for (let index = 0; index < eventResult?.Options?.length; index++) {
-    //                         const option = eventResult?.Options[index];
-    //                         options.push({ key: option.Key, value: option.Title });
-    //                     }
-    
-    //                     calculatedFilter.options = options;
-                        
-    //                     this.setCalculatedFilterData(filter, calculatedFilter);
-
-    //                     // Refresh all the calculated filters for let the options refresh.
-    //                     this.notifyCalculatedFiltersChange(this._calculateFilters);
-    //                 }
-    //             });
-    //         // }, 0);
-    //     } else {
-    //         this.setCalculatedFilterData(filter, calculatedFilter);
-    //     }
-        
-    // }
-
-    private setCalculatedFilterData(filter: IFilter, calculatedFilter: ICalculatedFilter) {
-        const hasOptions = calculatedFilter.options?.length > 0;
-        calculatedFilter.disabled = !hasOptions;
-
-        // If this parameter has value in the page parameters and exist in the options, use it.
-        if (this.parameters.hasOwnProperty(filter.pageParameterKey) && hasOptions &&
-            calculatedFilter.options.some(option => option.key === this.parameters[filter.pageParameterKey])) {
-            calculatedFilter.value = this.parameters[filter.pageParameterKey];
-        } else if (calculatedFilter.options?.length > 0) { // If this parameter has options, use the first option if useFirstValue is true else set it to ''.
-            calculatedFilter.value = filter.useFirstValue ? calculatedFilter.options[0].key : '';
-
-            if (filter.useFirstValue) {
-                this.setPageParameterValue(filter.pageParameterKey, calculatedFilter.value);
-            }
-        } else {
-            calculatedFilter.value = '';
-        }
-        
     }
 
     ngOnInit(): void {
