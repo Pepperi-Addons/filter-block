@@ -10,6 +10,7 @@ import { BlockComponent } from './index';
 
 import { config } from '../app.config';
 import { PepSelectModule } from '@pepperi-addons/ngx-lib/select';
+import { PepDialogModule } from '@pepperi-addons/ngx-lib/dialog';
 
 export const routes: Routes = [
     {
@@ -24,6 +25,7 @@ export const routes: Routes = [
         CommonModule,
         PepSelectModule,
         PepNgxLibModule,
+        PepDialogModule,
         TranslateModule.forChild({
             loader: {
                 provide: TranslateLoader,

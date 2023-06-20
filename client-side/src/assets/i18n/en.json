@@ -20,5 +20,7 @@
     "USE_FIRST_VALUE_SUB_TITLE": "When the value for this filter is not set, it will use the first option as default.",
     "PLACEHOLDER_TITLE": "Or use a placeholder text",
     "PLACEHOLDER_WHEN_NO_OPTIONS_TITLE": "Empty values text",
-    "ADD_FILTER": "Add filter"
+    "ADD_FILTER": "Add filter",
+    "MSG_NOTICE_TITLE": "Notice",
+    "MSG_ERROR_GENERAL": "Something went wrong, Please contact your administrator."
 }

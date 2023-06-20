@@ -4,6 +4,7 @@ import { IConfig, IHostObject } from '../block.model';
 import { IPepOption, PepAddonService } from '@pepperi-addons/ngx-lib';
 import { BehaviorSubject, distinctUntilChanged, Observable } from "rxjs";
 import { IFilter, ICalculatedFilter, ICalculatedFiltersEventResult } from 'shared';
+import { PepDialogData, PepDialogService } from '@pepperi-addons/ngx-lib/dialog';
 
 @Component({
     selector: 'page-block',
@@ -60,7 +61,7 @@ export class BlockComponent implements OnInit {
 
     constructor(
         private translate: TranslateService,
-        private addonService: PepAddonService) {
+        private dialogService: PepDialogService) {
     }
 
     private notifyCalculatedFiltersChange(value: Array<ICalculatedFilter>) {
@@ -84,7 +85,13 @@ export class BlockComponent implements OnInit {
             // Refresh all the calculated filters for let the options refresh.
             this.notifyCalculatedFiltersChange(calculatedFilters);
         } else {
-            // TODO: Show error message.
+            // Show error message.
+            const title = this.translate.instant('MSG_NOTICE_TITLE');
+            const dataMsg = new PepDialogData({
+                title,
+                content: eventResult.Error || this.translate.instant('MSG_ERROR_GENERAL')
+            });
+            this.dialogService.openDefaultDialog(dataMsg);
         }
     }
 
