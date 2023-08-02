@@ -1,26 +1,28 @@
-<mat-tab-group #tabGroup class="editor-tabs" animationDuration="0ms">
+<mat-tab-group #tabGroup class="page-builder-editor-tabs" animationDuration="0ms">
     <mat-tab label="{{'GENERAL_TAB_TITLE' | translate}}">
-        <label class="body-sm">{{'GENERAL_SUB_TITLE' | translate}}</label>   
-        <pep-group-buttons-settings 
-            [groupType]="'custom'" [subHeader]="'DIRECTION_TITLE' | translate"
-            [btnKey]="configuration?.direction" [btnsArray]="directionTypes"
-            (btnkeyChange)="onFieldChange('direction', $event)">
-        </pep-group-buttons-settings>
-        
-        <pep-group-buttons-settings [groupType]="'sizes'" [subHeader]="'SPACING_TITLE' | translate"
-            [btnKey]="configuration?.spacing" [excludeKeys]="['xs','xl']"
-            (btnkeyChange)="onFieldChange('spacing', $event)">
-        </pep-group-buttons-settings>
-        <div class="width-container">
-            <pep-checkbox class="checkbox-as-title" [value]="configuration?.limitWidth" [label]="'LIMIT_WIDTH' | translate" [renderTitle]="false" (valueChange)="onFieldChange('limitWidth',$event)"></pep-checkbox>
-            <pep-textbox type="real" [disabled]="!configuration?.limitWidth"
-                [value]="configuration?.maxWidth" [label]="'MAX_WIDTH' | translate" 
-                (valueChange)="onFieldChange('maxWidth', $event)">
-            </pep-textbox>
-        </div>     
+        <div class="page-builder-editor-tab">
+            <label class="body-sm">{{'GENERAL_SUB_TITLE' | translate}}</label>   
+            <pep-group-buttons-settings 
+                [groupType]="'custom'" [subHeader]="'DIRECTION_TITLE' | translate"
+                [btnKey]="configuration?.direction" [btnsArray]="directionTypes"
+                (btnkeyChange)="onFieldChange('direction', $event)">
+            </pep-group-buttons-settings>
+            
+            <pep-group-buttons-settings [groupType]="'sizes'" [subHeader]="'SPACING_TITLE' | translate"
+                [btnKey]="configuration?.spacing" [excludeKeys]="['xs','xl']"
+                (btnkeyChange)="onFieldChange('spacing', $event)">
+            </pep-group-buttons-settings>
+            <div class="width-container">
+                <pep-checkbox class="checkbox-as-title" [value]="configuration?.limitWidth" [label]="'LIMIT_WIDTH' | translate" [renderTitle]="false" (valueChange)="onFieldChange('limitWidth',$event)"></pep-checkbox>
+                <pep-textbox type="real" [disabled]="!configuration?.limitWidth"
+                    [value]="configuration?.maxWidth" [label]="'MAX_WIDTH' | translate" 
+                    (valueChange)="onFieldChange('maxWidth', $event)">
+                </pep-textbox>
+            </div>     
+        </div>
     </mat-tab>
     <mat-tab cdkDropListGroup label="{{'CONTENT_TAB_TITLE' | translate}}">
-        <ng-container>
+        <div class="page-builder-editor-tab">
             <label class="body-sm">{{'FILTERS_SUB_TITLE' | translate}}</label>
             <div *ngIf="configuration?.filters.length > 0" (cdkDropListDropped)="drop($event)" cdkDropList class="available-filters">
                 <filter-editor *ngFor="let currentFilter of configuration?.filters; let i=index;" class="available-filter"
@@ -33,6 +35,6 @@
             </div>
             <pep-button class="add-content-button" value="{{'ADD_FILTER' | translate}}" styleType="regular" iconName="number_plus" iconPosition="end"
                     (buttonClick)="addNewFilterClick()" [disabled]="configuration?.filters.length > 10"></pep-button>
-        </ng-container>
+        </div>
     </mat-tab>
 </mat-tab-group>

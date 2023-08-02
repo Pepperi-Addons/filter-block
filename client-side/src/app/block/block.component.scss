@@ -6,10 +6,10 @@
     display: flex;
     
     &.direction-horizontal {
-        flex-direction: column;
+        flex-direction: row;
     }
     &.direction-vertical {
-        flex-direction: row;
+        flex-direction: column;
     }
 
     &.spacing-sm {

@@ -2,16 +2,17 @@ export class IFilter {
     title: string = '';
     pageParameterKey: string = '';
     dependsOn: string = ''; // list of all page parameters from the page (multi choise)
-    optionsSource: any = {};
+    optionsSource: any = undefined;
     useFirstValue: boolean = false;
     placeholder: string = '';
+    hideWhenNoOptions: boolean = false;
     placeholderWhenNoOptions: string = '';
 }
 
 export class ICalculatedFilter extends IFilter {
     // Calculated fields
     options?: Array<{ key: string, value: string }> = [];
-    disabled?: boolean = false;
+    hidden?: boolean = false;
     value?: string = '';
 }
 

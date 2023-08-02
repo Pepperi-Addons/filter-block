@@ -16,22 +16,26 @@
                     (valueChange)="onFilterFieldChange('title', $event)">
         </pep-textbox>
 
-        <pep-textbox [label]="'PAGE_PARAMETER_KEY_TITLE' | translate" [value]="filter.pageParameterKey"
+        <pep-select [label]="'PAGE_PARAMETER_KEY_TITLE' | translate" [value]="filter.pageParameterKey" [options]="pageParameterOptions"
+            (valueChange)="onFilterFieldChange('pageParameterKey', $event)" [emptyOption]="false" [disabled]="pageParameterOptions.length === 0"></pep-select>
+        <!-- <pep-textbox [label]="'PAGE_PARAMETER_KEY_TITLE' | translate" [value]="filter.pageParameterKey"
                     (valueChange)="onFilterFieldChange('pageParameterKey', $event)">
-        </pep-textbox>
+        </pep-textbox> -->
 
-        <pep-select [label]="'DEPENDS_ON_TITLE' | translate" [value]="filter.dependsOn" [placeholder]="''" type="multi" [options]="dependsOnOptions"
-            (valueChange)="onFilterFieldChange('dependsOn', $event)" [emptyOption]="false" ></pep-select>
+        <pep-select [label]="'DEPENDS_ON_TITLE' | translate" [value]="filter.dependsOn" type="multi" [options]="dependsOnOptions"
+            (valueChange)="onFilterFieldChange('dependsOn', $event)" [emptyOption]="false" [disabled]="dependsOnOptions.length === 0"></pep-select>
 
         <div>
             <pep-field-title [label]="'OPTIONS_SOURCE_TITLE' | translate"></pep-field-title>
-            <pep-button class="script-button" 
-                [value]="filter.optionsSource?.FlowKey || ('CHOOSE_OPTIONS_SOURCE' | translate)" 
-                (buttonClick)="openOptionsSourcePickerDialog();">
-            </pep-button>
+            <pep-flow-picker-button [flowHostObject]="optionsSourceHostObject" (flowChange)="onOptionsSourceChange($event)"></pep-flow-picker-button>
         </div>
 
-        <pep-textbox [label]="'PLACEHOLDER_WHEN_NO_OPTIONS_TITLE' | translate" [value]="filter.placeholderWhenNoOptions" 
+        <div>
+            <pep-checkbox class="checkbox-as-title" [value]="filter.hideWhenNoOptions" [label]="'HIDE_WHEN_NO_OPTIONS_TITLE' | translate" [renderTitle]="false"
+                (valueChange)="onFilterFieldChange('hideWhenNoOptions', $event)"></pep-checkbox>
+            <span class="header-title body-xs checkbox-description">{{('HIDE_WHEN_NO_OPTIONS_SUB_TITLE' | translate)}}</span>
+        </div>
+        <pep-textbox [label]="'PLACEHOLDER_WHEN_NO_OPTIONS_TITLE' | translate" [value]="filter.placeholderWhenNoOptions" [disabled]="filter.hideWhenNoOptions"
                     (valueChange)="onFilterFieldChange('placeholderWhenNoOptions', $event)">
         </pep-textbox>
 
@@ -40,7 +44,6 @@
                 (valueChange)="onFilterFieldChange('useFirstValue', $event)"></pep-checkbox>
             <span class="header-title body-xs checkbox-description">{{('USE_FIRST_VALUE_SUB_TITLE' | translate)}}</span>
         </div>
-
         <pep-textbox [label]="'PLACEHOLDER_TITLE' | translate" [value]="filter.placeholder" [disabled]="filter.useFirstValue"
                     (valueChange)="onFilterFieldChange('placeholder', $event)">
         </pep-textbox>

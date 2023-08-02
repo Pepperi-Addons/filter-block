@@ -12,6 +12,7 @@ import { BlockModule, BlockComponent } from './block';
 import { BlockEditorModule, BlockEditorComponent } from './block-editor';
 
 import { config } from './app.config';
+import { FiltersBlockService } from './services/filters-block.service';
 
 @NgModule({
     declarations: [
@@ -32,7 +33,7 @@ import { config } from './app.config';
         }),
         AppRoutingModule,
     ],
-    providers: [],
+    providers: [ FiltersBlockService ],
     bootstrap: [
         // AppComponent
     ]

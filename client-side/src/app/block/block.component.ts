@@ -14,26 +14,14 @@ import { PepDialogData, PepDialogService } from '@pepperi-addons/ngx-lib/dialog'
 export class BlockComponent implements OnInit {
     @Input()
     set hostObject(value: IHostObject) {
-        const isFirstLoad = this._configuration === undefined;
-        const consumeParameterChanged = JSON.stringify(this._parameters) !== JSON.stringify(value.parameters);
-        const filtersChanged = JSON.stringify(this._configuration?.filters) !== JSON.stringify(value.configuration?.filters);
-
-        this._configuration = value?.configuration;
-        this._pageConfiguration = value?.pageConfiguration;
-        this._pageParameters = value?.pageParameters;
-        this._parameters = value?.parameters;
-        
-        // Load filters only if (!isFirstLoad && filtersChanged), this is for edit mode when can change the editor !!!.
-        if (!isFirstLoad && filtersChanged) {
-            this.onClientFiltersBlockLoad();
-        }
-
-        // Load filters only if (!isFirstLoad && consumeParameterChanged) {
-        if (!isFirstLoad && consumeParameterChanged) {
-            this.onClientFiltersBlockChange();
-        }
+        this.updateData(value);
     }
     
+    private _state: any; 
+    get state(): any {
+        return this._state;
+    }
+
     private _configuration: IConfig; 
     get configuration(): IConfig {
         return this._configuration;
@@ -41,23 +29,13 @@ export class BlockComponent implements OnInit {
 
     @Output() hostEvents: EventEmitter<any> = new EventEmitter<any>();
     
-    private _pageConfiguration: any;
-
-    private _pageParameters: any;
-    get pageParameters(): any {
-        return this._pageParameters || {};
-    }
-
-    private _parameters: any;
-    get parameters(): any {
-        return this._parameters || {};
-    }
-
     // This subject is for load the calculated filters with the options.
     private _calculatedFiltersSubject: BehaviorSubject<Array<ICalculatedFilter>> = new BehaviorSubject<Array<ICalculatedFilter>>([]);
     get calculatedFiltersSubject$(): Observable<Array<ICalculatedFilter>> {
         return this._calculatedFiltersSubject.asObservable().pipe(distinctUntilChanged());
     }
+
+    protected shouldBeVerticalOnSmallScreenSize: boolean = false;
 
     constructor(
         private translate: TranslateService,
@@ -68,73 +46,47 @@ export class BlockComponent implements OnInit {
         this._calculatedFiltersSubject.next(value);
     }
 
-    private setCalculatedFiltersFromEvent(eventResult: ICalculatedFiltersEventResult) {
-        if (eventResult?.Success) {
-            const calculatedFilters: Array<ICalculatedFilter> = eventResult.CalculatedFilters;
-            
-            for (let index = 0; index < calculatedFilters.length; index++) {
-                const calculatedFilter = calculatedFilters[index];
-                if (calculatedFilter.useFirstValue && calculatedFilter.value !== '') {
-                    // Check that the value of this parameter is not calculatedFilter.value
-                    if (this.parameters[calculatedFilter.pageParameterKey] !== calculatedFilter.value) {
-                        this.setPageParameterValue(calculatedFilter.pageParameterKey, calculatedFilter.value);
-                    }
-                }
-            }
-
-            // Refresh all the calculated filters for let the options refresh.
-            this.notifyCalculatedFiltersChange(calculatedFilters);
-        } else {
-            // Show error message.
-            const title = this.translate.instant('MSG_NOTICE_TITLE');
-            const dataMsg = new PepDialogData({
-                title,
-                content: eventResult.Error || this.translate.instant('MSG_ERROR_GENERAL')
-            });
-            this.dialogService.openDefaultDialog(dataMsg);
+    private updateData(data: IHostObject) {
+        if (data) {
+            this._state = data.state;
+            this._configuration = data.configuration;
+            this.setCalculatedFilters(this._configuration);
         }
     }
 
-    private getEventData() {
-        const res = {
-            filters: this.configuration.filters,
-            parameters: { ...this.pageParameters, ...this.parameters },
-        };
-        return res;
+    private setCalculatedFilters(configuration: IConfig) {
+        const calculatedFilters: Array<ICalculatedFilter> = configuration?.filters || [];
+        
+        // Refresh all the calculated filters for let the options refresh.
+        this.notifyCalculatedFiltersChange(calculatedFilters);
     }
 
-    private onClientFiltersBlockLoad() {
-        if (this.configuration?.filters?.length > 0) {
-            this.hostEvents.emit({
-                action: 'emit-event',
-                eventKey: 'OnClientFiltersBlockLoad',
-                eventData: this.getEventData(),
-                completion: (eventResult: ICalculatedFiltersEventResult) => {
-                    this.setCalculatedFiltersFromEvent(eventResult);
-                }
-            });
-        } else {
-            this.notifyCalculatedFiltersChange([]);
-        }
+    private registerStateChange(data: {state: any, configuration: any}) {
+        this.updateData(data);
     }
 
-    private onClientFiltersBlockChange() {
-        if (this.configuration?.filters?.length > 0) {
-            this.hostEvents.emit({
-                action: 'emit-event',
-                eventKey: 'OnConsumeParameterChange',
-                eventData: this.getEventData(),
-                completion: (eventResult: ICalculatedFiltersEventResult) => {
-                    this.setCalculatedFiltersFromEvent(eventResult);
-                }
-            });
+    private registerScreenSizeChange(data: {state: any, configuration: any}) {
+        // If the direction changed from horizontal to vertical because of the screen size, we set the flag to true.
+        // When this flag is true, we will set the direction to vertical always.
+        if (data.configuration.direction === 'vertical') {
+            this.shouldBeVerticalOnSmallScreenSize = true;
         } else {
-            this.notifyCalculatedFiltersChange([]);
+            this.shouldBeVerticalOnSmallScreenSize = false;
         }
     }
 
     ngOnInit(): void {
-        this.onClientFiltersBlockLoad();
+        this.hostEvents.emit({
+            action: 'register-state-change',
+            callback: this.registerStateChange.bind(this)
+        });
+
+        this.hostEvents.emit({
+            action: 'register-screen-size-change',
+            callback: this.registerScreenSizeChange.bind(this)
+        });
+
+        // this.onClientFiltersBlockLoad();
     }
 
     ngOnChanges(e: any): void {
@@ -142,11 +94,21 @@ export class BlockComponent implements OnInit {
     }
 
     setPageParameterValue(key: string, value: any) {
+        // if (key.length > 0) {
+        //     this.hostEvents.emit({
+        //         action: 'set-parameter',
+        //         key: key,
+        //         value: value || ''
+        //     });
+        // }
+
         if (key.length > 0) {
+            const changes = {};
+            changes[key] = value || '';
+
             this.hostEvents.emit({
-                action: 'set-parameter',
-                key: key,
-                value: value || ''
+                action: 'state-change',
+                changes: changes
             });
         }
     }

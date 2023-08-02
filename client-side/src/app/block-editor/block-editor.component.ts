@@ -2,7 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, 
 import { CdkDragDrop, CdkDragEnd, CdkDragStart, moveItemInArray } from '@angular/cdk/drag-drop';
 import { TranslateService } from '@ngx-translate/core';
 import { Page, PageConfiguration, PageConfigurationParameter } from '@pepperi-addons/papi-sdk';
-import { IConfig } from '../block.model';
+import { IEditorConfig, IEditorHostObject } from '../block.model';
 import { PepButton } from '@pepperi-addons/ngx-lib/button';
 import { FiltersBlockService } from '../services/filters-block.service';
 import { IFilter } from 'shared';
@@ -10,43 +10,32 @@ import { IFilter } from 'shared';
 @Component({
     selector: 'page-block-editor',
     templateUrl: './block-editor.component.html',
-    styleUrls: ['./block-editor.component.scss'],
-    providers: [ FiltersBlockService ]
+    styleUrls: ['./block-editor.component.scss']
 })
 export class BlockEditorComponent implements OnInit {
     @Input()
-    set hostObject(value: any) {
+    set hostObject(value: IEditorHostObject) {
         if (value && value.configuration && Object.keys(value.configuration).length > 0) {
             this._configuration = value.configuration
         } else {
             this.loadDefaultConfiguration();
         }
 
-        this.pageParameters = value?.pageParameters;
         this.initPageConfiguration(value?.pageConfiguration);
-        this.initPageBlocksData(value?.page);
+        this._page = value?.page;
+        this.filtersBlockService.recalculateEditorData(this._page, this._pageConfiguration);
     }
     
-    private _configuration: IConfig;
-    get configuration(): IConfig {
+    private _configuration: IEditorConfig;
+    get configuration(): IEditorConfig {
         return this._configuration;
     }
-
-    // All the page parameters to set in page configuration when needed (for ScriptPicker addon usage).
-    private _pageParameters: any;
-    set pageParameters(value: any) {
-        this._pageParameters = value;
-    }
-    get pageParameters(): any {
-        return this._pageParameters || {};
+    
+    private _page: Page;
+    get page(): Page {
+        return this._page;
     }
 
-    // private consumeAllParameter: PageConfigurationParameter = {
-    //     Key: '*',
-    //     Type: 'String',
-    //     Consume: true,
-    //     Produce: true
-    // };
     private defaultPageConfiguration: PageConfiguration = { "Parameters": []};
 
     private _pageConfiguration: PageConfiguration;
@@ -62,35 +51,12 @@ export class BlockEditorComponent implements OnInit {
         private filtersBlockService: FiltersBlockService
         ) {
     }
-
-    private initPageBlocksData(page: Page) {
-        if (page?.Blocks?.length > 0) {
-            const pageParametersParams = new Map<string, PageConfigurationParameter>();
-
-            // Go over all the blocks in the page.
-            for (let index = 0; index < page.Blocks.length; index++) {
-                const block = page.Blocks[index];
-                
-                // Go over all the parameters in the block.
-                for (let paramIndex = 0; paramIndex < block.PageConfiguration?.Parameters?.length; paramIndex++) {
-                    const param = block.PageConfiguration.Parameters[paramIndex];
-                    
-                    if (!pageParametersParams.has(param.Key)) {
-                        pageParametersParams.set(param.Key, param);
-                    }
-                }
-            }
-
-            // Set the page parameters in the service.
-            this.filtersBlockService.pageParameters = pageParametersParams;
-        }
-    }
     
     private initPageConfiguration(value: PageConfiguration = null) {
         this._pageConfiguration = value || JSON.parse(JSON.stringify(this.defaultPageConfiguration));
     }
 
-    private getDefaultHostObject(): IConfig {
+    private getDefaultHostObject(): IEditorConfig {
         return { 
             filters: [], 
             direction: 'horizontal',
@@ -112,31 +78,40 @@ export class BlockEditorComponent implements OnInit {
         });
     }
 
-    private getProduceParametersKeys(): Array<string> {
-        const parametersKeys = [];
+    private getProduceParametersKeys(): Map<string, string> {
+        const parametersKeys = new Map<string, string>();
         for (let index = 0; index < this.configuration.filters.length; index++) {
             const filter = this.configuration.filters[index];
             if (filter.pageParameterKey) {
-                parametersKeys.push(filter.pageParameterKey);
+                parametersKeys.set(filter.pageParameterKey, filter.pageParameterKey);
             }
         }
 
         return parametersKeys;
     }
 
-    private getConsumeParametersKeys(): Array<string> {
-        const parametersKeys = [];
+    private getConsumeParametersKeys(produceParametersKeys: Map<string, string>): Map<string, string> {
+        const parametersKeys = new Map<string, string>();
         for (let index = 0; index < this.configuration.filters.length; index++) {
             const filter = this.configuration.filters[index];
             if (filter.dependsOn.length > 0) {
-                parametersKeys.push(...filter.dependsOn.split(';'));
+                const tmpArr = filter.dependsOn.split(';');
+                // Check if the parameter is not in the produce parameters keys, then add it.
+                for (let paramIndex = 0; paramIndex < tmpArr.length; paramIndex++) {
+                    const paramKey = tmpArr[paramIndex];
+                    if (!produceParametersKeys.has(paramKey)) {
+                        parametersKeys.set(paramKey, paramKey);
+                    }
+                }
             }
         }
 
         return parametersKeys;
     }
 
-    private addParametersToPageConfiguration(params: string[], isProduce: boolean, isConsume: boolean) {
+    private addParametersToPageConfiguration(paramsMap: Map<string, string>, isProduce: boolean, isConsume: boolean) {
+        const params = Array.from(paramsMap.values());
+
         // Add the parameters to page configuration.
         for (let index = 0; index < params.length; index++) {
             const parameterKey = params[index];
@@ -161,17 +136,17 @@ export class BlockEditorComponent implements OnInit {
     private updatePageConfigurationObject() {
         this.initPageConfiguration();
         
-        // Add the consume all parameter.
-        // this._pageConfiguration.Parameters.push(this.consumeAllParameter);
-
         // Get the produce parameters keys from the filters.
         const produceParametersKeys = this.getProduceParametersKeys();
-        this.addParametersToPageConfiguration(produceParametersKeys, true, false);
+        this.addParametersToPageConfiguration(produceParametersKeys, true, true);
         
         // Get the consume parameters keys from the filters.
-        const consumeParametersKeys = this.getConsumeParametersKeys();
+        const consumeParametersKeys = this.getConsumeParametersKeys(produceParametersKeys);
         this.addParametersToPageConfiguration(consumeParametersKeys, false, true);
         
+        // After adding the params to the page configuration need to recalculate the page parameters.
+        this.filtersBlockService.recalculateEditorData(this._page, this._pageConfiguration);
+
         this.emitSetPageConfiguration();
     }
 
@@ -189,12 +164,6 @@ export class BlockEditorComponent implements OnInit {
                 { key: 'vertical', value: this.translate.instant('VERTICAL')}//, callback: (event: any) => this.onFieldChange('direction',event) }
             ]
         });
-
-        // // Add the consume all parameter if not exist.
-        // if (!this._pageConfiguration.Parameters.find(param => param.Key === '*')) {
-        //     this._pageConfiguration.Parameters.push(this.consumeAllParameter);
-        //     this.emitSetPageConfiguration();
-        // }
     }
 
     ngOnChanges(e: any): void {

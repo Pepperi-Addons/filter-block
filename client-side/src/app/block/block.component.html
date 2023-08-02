@@ -1,9 +1,10 @@
-<div class="filters-container" class="direction-{{configuration.direction}} spacing-{{configuration.spacing}}" >
-    <pep-select *ngFor="let calculateFilter of calculatedFiltersSubject$ | async; let i=index;" 
-        style.maxWidth="{{configuration.limitWidth ? configuration.maxWidth + 'rem' : '100%'}}" class="filter"
-        [label]="calculateFilter.title || 'UNTITLED' | translate" [options]="calculateFilter.options"
-        [value]="calculateFilter.value" [placeholder]="calculateFilter.placeholder"
-        [disabled]="calculateFilter.disabled" [placeholderWhenDisabled]="calculateFilter.placeholderWhenNoOptions" 
-        (valueChange)="setPageParameterValue(calculateFilter.pageParameterKey, $event)" [emptyOption]="false" ></pep-select>
-
+<div class="filters-container" class="direction-{{shouldBeVerticalOnSmallScreenSize ? 'vertical' : configuration.direction}} spacing-{{configuration.spacing}}" >
+    <ng-container *ngFor="let calculateFilter of calculatedFiltersSubject$ | async; let i=index;" >
+        <pep-select *ngIf="!(calculateFilter.hideWhenNoOptions && calculateFilter.hidden)"
+            style.maxWidth="{{!shouldBeVerticalOnSmallScreenSize && configuration.limitWidth ? configuration.maxWidth + 'rem' : '100%'}}" class="filter"
+            [label]="calculateFilter.title || 'UNTITLED' | translate" [options]="calculateFilter.options"
+            [value]="calculateFilter.value" [placeholder]="calculateFilter.placeholder"
+            [disabled]="calculateFilter.hidden" [placeholderWhenDisabled]="calculateFilter.placeholderWhenNoOptions"
+            (valueChange)="setPageParameterValue(calculateFilter.pageParameterKey, $event)" [emptyOption]="false" ></pep-select>
+    </ng-container>
 </div>

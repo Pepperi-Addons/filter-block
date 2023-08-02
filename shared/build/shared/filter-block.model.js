@@ -6,9 +6,10 @@ class IFilter {
         this.title = '';
         this.pageParameterKey = '';
         this.dependsOn = ''; // list of all page parameters from the page (multi choise)
-        this.optionsSource = {};
+        this.optionsSource = undefined;
         this.useFirstValue = false;
         this.placeholder = '';
+        this.hideWhenNoOptions = false;
         this.placeholderWhenNoOptions = '';
     }
 }
@@ -18,7 +19,7 @@ class ICalculatedFilter extends IFilter {
         super(...arguments);
         // Calculated fields
         this.options = [];
-        this.disabled = false;
+        this.hidden = false;
         this.value = '';
     }
 }

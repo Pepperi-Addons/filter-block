@@ -19,6 +19,8 @@
     "USE_FIRST_VALUE_TITLE": "Use first value",
     "USE_FIRST_VALUE_SUB_TITLE": "When the value for this filter is not set, it will use the first option as default.",
     "PLACEHOLDER_TITLE": "Or use a placeholder text",
+    "HIDE_WHEN_NO_OPTIONS_TITLE": "Hide when no options",
+    "HIDE_WHEN_NO_OPTIONS_SUB_TITLE": "When the options source is empty, the filter will be hidden.",
     "PLACEHOLDER_WHEN_NO_OPTIONS_TITLE": "Empty values text",
     "ADD_FILTER": "Add filter",
     "MSG_NOTICE_TITLE": "Notice",

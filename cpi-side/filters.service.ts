@@ -1,9 +1,10 @@
 import { ICalculatedFilter, IFilter } from "shared";
 import { RunFlowBody } from '@pepperi-addons/cpi-node';
+import { IContext } from "@pepperi-addons/cpi-node/build/cpi-side/events";
 
 class FiltersService {
 
-    private async getOptionsFromFlow(filter: IFilter, parameters: any, eventData: any): Promise<Array<{ Key: string, Title: string }>> {
+    private async getOptionsFromFlow(filter: IFilter, state: any, context: IContext | undefined): Promise<Array<{ Key: string, Title: string }>> {
         const res: any = { Options: [] };
 
         if (filter.optionsSource?.FlowKey?.length > 0) {
@@ -25,20 +26,15 @@ class FiltersService {
                 // Set the dynamic parameters values on the dynamicParamsData property.
                 for (let index = 0; index < dynamicParams.length; index++) {
                     const param = dynamicParams[index];
-                    dynamicParamsData[param] = parameters[param] || '';
+                    dynamicParamsData[param] = state[param] || '';
                 }
             }
         
             const flowToRun: RunFlowBody = {
                 RunFlow: filter.optionsSource,
                 Data: dynamicParamsData,
+                context: context
             };
-
-            // TODO: Remove one of the context properties.
-            if (eventData.client?.context) {
-                flowToRun['context'] = eventData;
-                flowToRun['Context'] = eventData;
-            }
 
             // Run the flow and return the options.
             const flowRes = await pepperi.flows.run(flowToRun);
@@ -48,12 +44,12 @@ class FiltersService {
         return res.Options;
     }
 
-    private async getCalculatedFilter(filter: IFilter, parameters: any, eventData: any): Promise<ICalculatedFilter> {
+    private async getCalculatedFilter(filter: IFilter, state: any, context: IContext | undefined): Promise<ICalculatedFilter> {
         const calculatedFilter: ICalculatedFilter = {...filter};
         
         // Set the calculated filter options.
         calculatedFilter.options = [];
-        const optionsFromFlow: Array<{ Key: string, Title: string }> = await this.getOptionsFromFlow(filter, parameters, eventData);
+        const optionsFromFlow: Array<{ Key: string, Title: string }> = await this.getOptionsFromFlow(filter, state, context);
 
         // For all option in optionsFromFlow, push it to the calculated filter options.
         for (let index = 0; index < optionsFromFlow.length; index++) {
@@ -63,30 +59,49 @@ class FiltersService {
 
         // Set other data on the calculated filter.
         const hasOptions = calculatedFilter.options?.length > 0;
-        calculatedFilter.disabled = !hasOptions;
+        calculatedFilter.hidden = !hasOptions;
+        calculatedFilter.value = '';
 
-        // If this parameter (from page parameters) has value and it exist in the options, use it.
-        if (parameters.hasOwnProperty(filter.pageParameterKey) && hasOptions && calculatedFilter.options.some(option => option.key === parameters[filter.pageParameterKey])) {
-            calculatedFilter.value = parameters[filter.pageParameterKey];
-        } else if (calculatedFilter.options?.length > 0) {
-            // If this parameter has options, use the first option if useFirstValue is true else set it to ''.
-            calculatedFilter.value = filter.useFirstValue ? calculatedFilter.options[0].key : '';
-        } else {
-            calculatedFilter.value = '';
+        // If filter has options.
+        if (hasOptions) {
+            // If filter.pageParameterKey exist in the state and this parameter (from state) has value and it exist in the options, use it.
+            if (state.hasOwnProperty(filter.pageParameterKey) && calculatedFilter.options.some(option => option.key === state[filter.pageParameterKey])) {
+                calculatedFilter.value = state[filter.pageParameterKey];
+            } else if (filter.useFirstValue) {
+                // If filter.useFirstValue is true, use the first option and set it to the state.
+                calculatedFilter.value = calculatedFilter.options[0].key;
+                state[filter.pageParameterKey] = calculatedFilter.value;
+            }
         }
 
         return calculatedFilter;
     }
 
-    async PrepareFiltersData(eventData: any): Promise<ICalculatedFilter[]> {
-        const filters: IFilter[] = eventData.filters || [];
-        const parameters: any = eventData.parameters || {};
+    // async PrepareFiltersData(eventData: any): Promise<ICalculatedFilter[]> {
+    //     const filters: IFilter[] = eventData.filters || [];
+    //     const parameters: any = eventData.parameters || {};
         
+    //     const calculatedFilters: Array<ICalculatedFilter> = [];
+        
+    //     for (let index = 0; index < filters.length; index++) {
+    //         const filter = filters[index];
+    //         const calculatedFilter = await this.getCalculatedFilter(filter, parameters, eventData);
+
+    //         // If filter has no 
+    //         calculatedFilters.push(calculatedFilter);
+    //     }
+
+    //     return calculatedFilters;
+    // }
+    
+    async PrepareFiltersData(filters: IFilter[], state: any, context: IContext | undefined): Promise<ICalculatedFilter[]> {
         const calculatedFilters: Array<ICalculatedFilter> = [];
         
         for (let index = 0; index < filters.length; index++) {
             const filter = filters[index];
-            const calculatedFilter = await this.getCalculatedFilter(filter, parameters, eventData);
+            const calculatedFilter = await this.getCalculatedFilter(filter, state, context);
+
+            // If filter has no 
             calculatedFilters.push(calculatedFilter);
         }
 

@@ -14,6 +14,7 @@ import { PepCheckboxModule } from '@pepperi-addons/ngx-lib/checkbox';
 import { PepRemoteLoaderModule } from '@pepperi-addons/ngx-lib/remote-loader';
 import { MatDialogModule } from '@angular/material/dialog';
 import { PepFieldTitleModule } from '@pepperi-addons/ngx-lib/field-title';
+import { PepFlowPickerButtonModule } from '@pepperi-addons/ngx-composite-lib/flow-picker-button';
 
 const pepIcons = [
     pepIconTextAlignCenter, 
@@ -46,6 +47,7 @@ const pepIcons = [
         PepCheckboxModule,
         PepNgxLibModule,
         PepRemoteLoaderModule,
+        PepFlowPickerButtonModule,
         TranslateModule.forChild({
             loader: {
                 provide: TranslateLoader,

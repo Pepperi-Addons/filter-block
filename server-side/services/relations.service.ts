@@ -37,11 +37,13 @@ export class RelationsService {
             AddonRelativeURL: this.bundleFileName,
             ComponentName: `${blockName}Component`, // This is should be the block component name (from the client-side)
             ModuleName: `${blockName}Module`, // This is should be the block module name (from the client-side)
+            // EditorComponentName: `${blockName}EditorComponent`, // This is should be the block editor component name (from the client-side)
+            // EditorModuleName: `${blockName}EditorModule`, // This is should be the block editor module name (from the client-side)}
             ElementsModule: 'WebComponents',
             ElementName: `${blockName.toLocaleLowerCase()}-element-${this.client.AddonUUID}`,
-            EditorComponentName: `${blockName}EditorComponent`, // This is should be the block editor component name (from the client-side)
-            EditorModuleName: `${blockName}EditorModule`, // This is should be the block editor module name (from the client-side)}
             EditorElementName: `${blockName.toLocaleLowerCase()}-editor-element-${this.client.AddonUUID}`,
+            BlockLoadEndpoint: '/addon-cpi/on_filter_block_load',
+            BlockStateChangeEndpoint: '/addon-cpi/on_filter_block_state_change',
             Schema: {
                 "Fields": {
                     "filters": {
@@ -70,6 +72,10 @@ export class RelationsService {
                                 },
                                 "placeholder": {
                                     "Type": "String",
+                                    "ConfigurationPerScreenSize": false,
+                                },
+                                "hideWhenNoOptions": {
+                                    "Type": "Boolean",
                                     "ConfigurationPerScreenSize": false,
                                 },
                                 "placeholderWhenNoOptions": {

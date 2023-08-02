@@ -5,6 +5,7 @@ export declare class IFilter {
     optionsSource: any;
     useFirstValue: boolean;
     placeholder: string;
+    hideWhenNoOptions: boolean;
     placeholderWhenNoOptions: string;
 }
 export declare class ICalculatedFilter extends IFilter {
@@ -12,7 +13,7 @@ export declare class ICalculatedFilter extends IFilter {
         key: string;
         value: string;
     }>;
-    disabled?: boolean;
+    hidden?: boolean;
     value?: string;
 }
 export interface ICalculatedFiltersEventResult {
