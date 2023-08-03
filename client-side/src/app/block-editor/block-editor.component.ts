@@ -90,19 +90,17 @@ export class BlockEditorComponent implements OnInit {
         return parametersKeys;
     }
 
-    private getConsumeParametersKeys(produceParametersKeys: Map<string, string>): Map<string, string> {
+    private getConsumeParametersKeys(): Map<string, string> {
         const parametersKeys = new Map<string, string>();
         for (let index = 0; index < this.configuration.filters.length; index++) {
             const filter = this.configuration.filters[index];
-            if (filter.dependsOn.length > 0) {
-                const tmpArr = filter.dependsOn.split(';');
-                // Check if the parameter is not in the produce parameters keys, then add it.
-                for (let paramIndex = 0; paramIndex < tmpArr.length; paramIndex++) {
-                    const paramKey = tmpArr[paramIndex];
-                    if (!produceParametersKeys.has(paramKey)) {
-                        parametersKeys.set(paramKey, paramKey);
+            if (filter.optionsSource?.FlowParams) {
+                Object.keys(filter.optionsSource.FlowParams).forEach(key => {
+                    const param = filter.optionsSource.FlowParams[key];
+                    if (param.Source === 'Dynamic') {
+                        parametersKeys.set(param.Value, param.Value);
                     }
-                }
+                });
             }
         }
 
@@ -141,7 +139,7 @@ export class BlockEditorComponent implements OnInit {
         this.addParametersToPageConfiguration(produceParametersKeys, true, true);
         
         // Get the consume parameters keys from the filters.
-        const consumeParametersKeys = this.getConsumeParametersKeys(produceParametersKeys);
+        const consumeParametersKeys = this.getConsumeParametersKeys();
         this.addParametersToPageConfiguration(consumeParametersKeys, false, true);
         
         // After adding the params to the page configuration need to recalculate the page parameters.

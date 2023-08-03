@@ -33,7 +33,7 @@ export class FilterEditorComponent implements OnInit {
 
     dialogRef: MatDialogRef<any>;
     pageParameterOptions: Array<IPepOption> = [];
-    dependsOnOptions: Array<IPepOption> = [];
+    // dependsOnOptions: Array<IPepOption> = [];
 
     optionsSourceHostObject;
 
@@ -49,23 +49,11 @@ export class FilterEditorComponent implements OnInit {
         const fields = {};
 
         if (runFlowData) {
-            this.filtersBlockService.currentProducersMap.forEach((value, key) => {
+            this.filtersBlockService.flowDynamicParameters.forEach((value, key) => {
                 fields[key] = {
-                    Type: value.Type || 'String'
+                    Type: value || 'String'
                 };
             });
-
-            if (this.filter.dependsOn.length > 0) {
-                const paramsKeys = this.filter.dependsOn.split(';');
-                
-                for (let index = 0; index < paramsKeys.length; index++) {
-                    const paramKey = paramsKeys[index];
-                    fields[paramKey] = {
-                        Type: 'String'
-                    }                
-                }
-                
-            }
         }
         
         this.optionsSourceHostObject['runFlowData'] = runFlowData?.FlowKey ? runFlowData : undefined;
@@ -82,9 +70,9 @@ export class FilterEditorComponent implements OnInit {
             this.pageParameterOptions = options;
         });
 
-        this.filtersBlockService.dependsOnOptionsSubject$.subscribe((options) => {
-            this.dependsOnOptions = options;
-        });
+        // this.filtersBlockService.dependsOnOptionsSubject$.subscribe((options) => {
+        //     this.dependsOnOptions = options;
+        // });
     }
 
     onRemoveClick() {

@@ -18,12 +18,9 @@
 
         <pep-select [label]="'PAGE_PARAMETER_KEY_TITLE' | translate" [value]="filter.pageParameterKey" [options]="pageParameterOptions"
             (valueChange)="onFilterFieldChange('pageParameterKey', $event)" [emptyOption]="false" [disabled]="pageParameterOptions.length === 0"></pep-select>
-        <!-- <pep-textbox [label]="'PAGE_PARAMETER_KEY_TITLE' | translate" [value]="filter.pageParameterKey"
-                    (valueChange)="onFilterFieldChange('pageParameterKey', $event)">
-        </pep-textbox> -->
-
-        <pep-select [label]="'DEPENDS_ON_TITLE' | translate" [value]="filter.dependsOn" type="multi" [options]="dependsOnOptions"
-            (valueChange)="onFilterFieldChange('dependsOn', $event)" [emptyOption]="false" [disabled]="dependsOnOptions.length === 0"></pep-select>
+        
+        <!-- <pep-select [label]="'DEPENDS_ON_TITLE' | translate" [value]="filter.dependsOn" type="multi" [options]="dependsOnOptions"
+            (valueChange)="onFilterFieldChange('dependsOn', $event)" [emptyOption]="false" [disabled]="dependsOnOptions.length === 0"></pep-select> -->
 
         <div>
             <pep-field-title [label]="'OPTIONS_SOURCE_TITLE' | translate"></pep-field-title>

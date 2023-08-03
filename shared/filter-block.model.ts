@@ -1,7 +1,7 @@
 export class IFilter {
     title: string = '';
     pageParameterKey: string = '';
-    dependsOn: string = ''; // list of all page parameters from the page (multi choise)
+    // dependsOn: string = ''; // list of all page parameters from the page (multi choise)
     optionsSource: any = undefined;
     useFirstValue: boolean = false;
     placeholder: string = '';
