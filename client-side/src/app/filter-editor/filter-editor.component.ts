@@ -48,13 +48,11 @@ export class FilterEditorComponent implements OnInit {
         const runFlowData = this.filter.optionsSource;
         const fields = {};
 
-        if (runFlowData) {
-            this.filtersBlockService.flowDynamicParameters.forEach((value, key) => {
-                fields[key] = {
-                    Type: value || 'String'
-                };
-            });
-        }
+        this.filtersBlockService.flowDynamicParameters.forEach((value, key) => {
+            fields[key] = {
+                Type: value || 'String'
+            };
+        });
         
         this.optionsSourceHostObject['runFlowData'] = runFlowData?.FlowKey ? runFlowData : undefined;
         this.optionsSourceHostObject['fields'] = fields;
