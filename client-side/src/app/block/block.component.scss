@@ -13,15 +13,15 @@
     }
 
     &.spacing-sm {
-        padding: 0 ngx-variables.$spacing-sm;
+        // padding: 0 ngx-variables.$spacing-sm;
         gap: ngx-variables.$spacing-sm;
     }
     &.spacing-md {
-        padding: 0 ngx-variables.$spacing-lg;
+        // padding: 0 ngx-variables.$spacing-lg;
         gap: ngx-variables.$spacing-lg;
     }
     &.spacing-lg {
-        padding: 0 ngx-variables.$spacing-xl;
+        // padding: 0 ngx-variables.$spacing-xl;
         gap: ngx-variables.$spacing-xl;
     }
 
