@@ -1,6 +1,6 @@
 {
   "AddonUUID": "d00398a6-3b65-47a0-b02c-08f5de960740",
-  "AddonVersion": "0.5.31",
+  "AddonVersion": "0.5.34",
   "DebugPort": 4500,
   "WebappBaseUrl": "https://app.sandbox.pepperi.com",
   "DefaultEditor": "main",
@@ -16,7 +16,7 @@
     "Dependencies": {
       "pages": "1.0.10",
       "cpi_node": "1.3.6",
-      "pepperi_pack": "1.1.5"
+      "pepperi_pack": "1.1.6"
     },
     "CPISide": [
       "addon-cpi.ts"
@@ -46,7 +46,8 @@
       "ngx-quill": "12",
       "ngx-signaturepad": "0",
       "ngx-virtual-scroller": "4",
-      "quill": "1"
+      "quill": "1",
+      "rxjs": "7"
     }
   }
 }
