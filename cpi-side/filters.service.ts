@@ -94,12 +94,22 @@ class FiltersService {
     //     return calculatedFilters;
     // }
     
+    setFilterTranslations(filter: IFilter): void {
+        // TODO:
+        // filter.title = pepperi.translations.translate(filter.title);
+        // filter.placeholder = pepperi.translations.translate(filter.placeholder);
+        // filter.placeholderWhenNoOptions = pepperi.translations.translate(filter.placeholderWhenNoOptions);
+    }
+
     async PrepareFiltersData(filters: IFilter[], state: any, context: IContext | undefined): Promise<ICalculatedFilter[]> {
         const calculatedFilters: Array<ICalculatedFilter> = [];
         
         for (let index = 0; index < filters.length; index++) {
             const filter = filters[index];
             const calculatedFilter = await this.getCalculatedFilter(filter, state, context);
+
+            // Set translations;
+            this.setFilterTranslations(filter);
 
             // If filter has no 
             calculatedFilters.push(calculatedFilter);
