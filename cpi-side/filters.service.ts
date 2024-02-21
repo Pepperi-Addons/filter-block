@@ -94,7 +94,7 @@ class FiltersService {
     //     return calculatedFilters;
     // }
     
-    async setFilterTranslations(filter: IFilter): Promise<void> {
+    async setUserTranslations(filter: IFilter): Promise<void> {
         filter.title = await pepperi.translations.translate({ key: filter.title });
         filter.placeholder = await pepperi.translations.translate({ key: filter.placeholder });
         filter.placeholderWhenNoOptions = await pepperi.translations.translate({ key: filter.placeholderWhenNoOptions });
@@ -108,7 +108,7 @@ class FiltersService {
             const calculatedFilter = await this.getCalculatedFilter(filter, state, context);
 
             // Set translations;
-            this.setFilterTranslations(filter);
+            this.setUserTranslations(filter);
 
             // If filter has no 
             calculatedFilters.push(calculatedFilter);
