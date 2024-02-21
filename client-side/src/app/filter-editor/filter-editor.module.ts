@@ -10,7 +10,9 @@ import { FilterEditorComponent } from './filter-editor.component';
 import { config } from '../app.config';
 import { PepButtonModule } from '@pepperi-addons/ngx-lib/button';
 import { PepSelectModule } from '@pepperi-addons/ngx-lib/select';
+import { PepMenuModule } from '@pepperi-addons/ngx-lib/menu';
 import { PepCheckboxModule } from '@pepperi-addons/ngx-lib/checkbox';
+import { PepDraggableItemsModule } from '@pepperi-addons/ngx-lib/draggable-items';
 import { PepRemoteLoaderModule } from '@pepperi-addons/ngx-lib/remote-loader';
 import { MatDialogModule } from '@angular/material/dialog';
 import { PepFieldTitleModule } from '@pepperi-addons/ngx-lib/field-title';
@@ -44,10 +46,12 @@ const pepIcons = [
         PepTextboxModule,
         PepSelectModule,
         PepFieldTitleModule,
+        PepMenuModule,
         PepCheckboxModule,
         PepNgxLibModule,
         PepRemoteLoaderModule,
         PepFlowPickerButtonModule,
+        PepDraggableItemsModule,
         TranslateModule.forChild({
             loader: {
                 provide: TranslateLoader,

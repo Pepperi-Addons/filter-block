@@ -3,7 +3,7 @@
 @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/mixins' as ngx-mixins;
 
 :host {
-     display: block;
+    display: block;
 }
 
 .actions {
@@ -20,7 +20,7 @@
     border-radius: ngx-variables.$border-radius-md;
     padding-inline: ngx-variables.$spacing-sm;
     margin-bottom: ngx-variables.$spacing-sm;
-    @include ngx-mixins.state-regular-default(true);
+    @include ngx-mixins.state-weak-default();
 
     .title-container {
         margin-top: .15rem;

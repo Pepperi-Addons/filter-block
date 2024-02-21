@@ -1,17 +1,53 @@
-<div class="filter-editor-container" >
+<!-- <div class="filter-editor-container" >
     <div>
         <pep-button classNames="lock-events" sizeType="xs" iconName="system_move"></pep-button>
     </div>
-    <div class="title-container">
+    <div class="title-container ellipsis" (click)="onToggle();">
         <span class="body-sm ellipsis">{{ index + 1 }}.&nbsp;</span>
         <span class="body-sm color-link bold ellipsis" title="{{filter.title || 'UNTITLED' | translate}}">{{filter.title || 'UNTITLED' | translate}}</span>
     </div>
-    <div class="actions" *ngIf="showActions">
-        <pep-button classNames="caution" sizeType="xs" iconName="system_bin" (buttonClick)="onRemoveClick();"></pep-button>
-        <pep-button *ngIf="!isOpen" sizeType="xs" iconName="arrow_down" (buttonClick)="onToggle();"></pep-button>
-        <pep-button *ngIf="isOpen" sizeType="xs" iconName="arrow_up" (buttonClick)="onToggle();"></pep-button>
-    </div>
+    <pep-menu
+        sizeType="xs"
+        styleType="regular"
+        [items]="actionsMenu"
+        (menuItemClick)="onMenuItemClick($event)">
+    </pep-menu>
     <div class="editor-container" *ngIf="isOpen">
+        <pep-textbox [label]="'TITLE' | translate" [value]="filter.title" 
+                    (valueChange)="onFilterFieldChange('title', $event)">
+        </pep-textbox>
+
+        <pep-select [label]="'PAGE_PARAMETER_KEY_TITLE' | translate" [value]="filter.pageParameterKey" [options]="pageParameterOptions"
+            (valueChange)="onFilterFieldChange('pageParameterKey', $event)" [emptyOption]="false" [disabled]="pageParameterOptions.length === 0"></pep-select>
+        
+        <div>
+            <pep-field-title [label]="'OPTIONS_SOURCE_TITLE' | translate"></pep-field-title>
+            <pep-flow-picker-button styleType="regular" [flowHostObject]="optionsSourceHostObject" (flowChange)="onOptionsSourceChange($event)"></pep-flow-picker-button>
+        </div>
+        <div class="editor-separator"></div>
+        <div>
+            <pep-checkbox class="checkbox-as-sub-title" [value]="filter.hideWhenNoOptions" [label]="'HIDE_WHEN_NO_OPTIONS_TITLE' | translate" [renderTitle]="false"
+                (valueChange)="onFilterFieldChange('hideWhenNoOptions', $event)"></pep-checkbox>
+            <span class="header-title body-xs checkbox-description">{{('HIDE_WHEN_NO_OPTIONS_SUB_TITLE' | translate)}}</span>
+        </div>
+        <pep-textbox [label]="'PLACEHOLDER_WHEN_NO_OPTIONS_TITLE' | translate" [value]="filter.placeholderWhenNoOptions" [disabled]="filter.hideWhenNoOptions"
+                    (valueChange)="onFilterFieldChange('placeholderWhenNoOptions', $event)">
+        </pep-textbox>
+        <div class="editor-separator"></div>
+        <div>
+            <pep-checkbox class="checkbox-as-sub-title" [value]="filter.useFirstValue" [label]="'USE_FIRST_VALUE_TITLE' | translate" [renderTitle]="false"
+                (valueChange)="onFilterFieldChange('useFirstValue', $event)"></pep-checkbox>
+            <span class="header-title body-xs checkbox-description">{{('USE_FIRST_VALUE_SUB_TITLE' | translate)}}</span>
+        </div>
+        <pep-textbox [label]="'PLACEHOLDER_TITLE' | translate" [value]="filter.placeholder" [disabled]="filter.useFirstValue"
+                    (valueChange)="onFilterFieldChange('placeholder', $event)">
+        </pep-textbox>
+    </div>
+</div> -->
+
+<pep-draggable-item titlePrefix="{{ index + 1 }}.&nbsp;" title="{{filter.title || 'UNTITLED' | translate}}" styleType="weak" [toggleContent]="true" 
+    [actionsMenu]="actionsMenu" [shadow]="false" titleClassNames="color-link" (actionsMenuItemClick)="onMenuItemClick($event)">
+    <ng-container pep-toggle-content>
         <pep-textbox [label]="'TITLE' | translate" [value]="filter.title" 
                     (valueChange)="onFilterFieldChange('title', $event)">
         </pep-textbox>
@@ -24,25 +60,25 @@
 
         <div>
             <pep-field-title [label]="'OPTIONS_SOURCE_TITLE' | translate"></pep-field-title>
-            <pep-flow-picker-button [flowHostObject]="optionsSourceHostObject" (flowChange)="onOptionsSourceChange($event)"></pep-flow-picker-button>
+            <pep-flow-picker-button styleType="regular" [flowHostObject]="optionsSourceHostObject" (flowChange)="onOptionsSourceChange($event)"></pep-flow-picker-button>
         </div>
-
+        <div class="editor-separator"></div>
         <div>
-            <pep-checkbox class="checkbox-as-title" [value]="filter.hideWhenNoOptions" [label]="'HIDE_WHEN_NO_OPTIONS_TITLE' | translate" [renderTitle]="false"
+            <pep-checkbox class="checkbox-as-sub-title" [value]="filter.hideWhenNoOptions" [label]="'HIDE_WHEN_NO_OPTIONS_TITLE' | translate" [renderTitle]="false"
                 (valueChange)="onFilterFieldChange('hideWhenNoOptions', $event)"></pep-checkbox>
             <span class="header-title body-xs checkbox-description">{{('HIDE_WHEN_NO_OPTIONS_SUB_TITLE' | translate)}}</span>
         </div>
         <pep-textbox [label]="'PLACEHOLDER_WHEN_NO_OPTIONS_TITLE' | translate" [value]="filter.placeholderWhenNoOptions" [disabled]="filter.hideWhenNoOptions"
                     (valueChange)="onFilterFieldChange('placeholderWhenNoOptions', $event)">
         </pep-textbox>
-
+        <div class="editor-separator"></div>
         <div>
-            <pep-checkbox class="checkbox-as-title" [value]="filter.useFirstValue" [label]="'USE_FIRST_VALUE_TITLE' | translate" [renderTitle]="false"
+            <pep-checkbox class="checkbox-as-sub-title" [value]="filter.useFirstValue" [label]="'USE_FIRST_VALUE_TITLE' | translate" [renderTitle]="false"
                 (valueChange)="onFilterFieldChange('useFirstValue', $event)"></pep-checkbox>
             <span class="header-title body-xs checkbox-description">{{('USE_FIRST_VALUE_SUB_TITLE' | translate)}}</span>
         </div>
         <pep-textbox [label]="'PLACEHOLDER_TITLE' | translate" [value]="filter.placeholder" [disabled]="filter.useFirstValue"
                     (valueChange)="onFilterFieldChange('placeholder', $event)">
         </pep-textbox>
-    </div>
-</div>
+    </ng-container>
+</pep-draggable-item>

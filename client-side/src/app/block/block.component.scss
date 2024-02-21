@@ -24,6 +24,10 @@
         // padding: 0 ngx-variables.$spacing-xl;
         gap: ngx-variables.$spacing-xl;
     }
+    &.spacing-xl {
+        // padding: 0 ngx-variables.$spacing-xl;
+        gap: ngx-variables.$spacing-2xl;
+    }
 
     pep-select {
         margin-bottom: 0;

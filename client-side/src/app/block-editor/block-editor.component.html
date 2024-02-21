@@ -9,11 +9,11 @@
             </pep-group-buttons-settings>
             
             <pep-group-buttons-settings [groupType]="'sizes'" [subHeader]="'SPACING_TITLE' | translate"
-                [btnKey]="configuration?.spacing" [excludeKeys]="['xs','xl']"
+                [btnKey]="configuration?.spacing" [excludeKeys]="['xs','2xl']"
                 (btnkeyChange)="onFieldChange('spacing', $event)">
             </pep-group-buttons-settings>
             <div class="width-container">
-                <pep-checkbox class="checkbox-as-title" [value]="configuration?.limitWidth" [label]="'LIMIT_WIDTH' | translate" [renderTitle]="false" (valueChange)="onFieldChange('limitWidth',$event)"></pep-checkbox>
+                <pep-checkbox class="checkbox-as-sub-title" [value]="configuration?.limitWidth" [label]="'LIMIT_WIDTH' | translate" [renderTitle]="false" (valueChange)="onFieldChange('limitWidth',$event)"></pep-checkbox>
                 <pep-textbox type="real" [disabled]="!configuration?.limitWidth"
                     [value]="configuration?.maxWidth" [label]="'MAX_WIDTH' | translate" 
                     (valueChange)="onFieldChange('maxWidth', $event)">
@@ -23,7 +23,7 @@
     </mat-tab>
     <mat-tab cdkDropListGroup label="{{'CONTENT_TAB_TITLE' | translate}}">
         <div class="page-builder-editor-tab">
-            <label class="body-sm">{{'FILTERS_SUB_TITLE' | translate}}</label>
+            <!-- <label class="body-sm">{{'FILTERS_SUB_TITLE' | translate}}</label> -->
             <div *ngIf="configuration?.filters.length > 0" (cdkDropListDropped)="drop($event)" cdkDropList class="available-filters">
                 <filter-editor *ngFor="let currentFilter of configuration?.filters; let i=index;" class="available-filter"
                     [index]="i" [showActions]="true" [isDraggable]="true" [filter]="currentFilter"

@@ -3,6 +3,8 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { IPepOption } from '@pepperi-addons/ngx-lib';
 import { FiltersBlockService } from '../services/filters-block.service';
 import { IFilter } from 'shared';
+import { IPepMenuItemClickEvent, PepMenuItem } from '@pepperi-addons/ngx-lib/menu';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'filter-editor',
@@ -34,10 +36,12 @@ export class FilterEditorComponent implements OnInit {
     dialogRef: MatDialogRef<any>;
     pageParameterOptions: Array<IPepOption> = [];
     // dependsOnOptions: Array<IPepOption> = [];
-
+    actionsMenu: Array<PepMenuItem> = [];
+        
     optionsSourceHostObject;
 
     constructor(
+        private translate: TranslateService,
         private filtersBlockService: FiltersBlockService
     ) { 
 
@@ -68,6 +72,12 @@ export class FilterEditorComponent implements OnInit {
             this.pageParameterOptions = options;
         });
 
+        this.translate.get('DELETE_FILTER').subscribe((res: string) => {
+            this.actionsMenu = [
+                { key: 'delete', text: this.translate.instant('DELETE_FILTER') }
+            ]
+        });
+
         // this.filtersBlockService.dependsOnOptionsSubject$.subscribe((options) => {
         //     this.dependsOnOptions = options;
         // });
@@ -93,5 +103,11 @@ export class FilterEditorComponent implements OnInit {
     onOptionsSourceChange(flowData: any) {
         this.filter.optionsSource = flowData;
         this.updateFilter();
+    }
+
+    onMenuItemClick(item: IPepMenuItemClickEvent){
+        if(item?.source?.key == 'delete'){
+            this.removeClick.emit();
+        }
     }
 }

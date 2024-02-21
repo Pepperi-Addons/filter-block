@@ -94,11 +94,10 @@ class FiltersService {
     //     return calculatedFilters;
     // }
     
-    setFilterTranslations(filter: IFilter): void {
-        // TODO:
-        // filter.title = pepperi.translations.translate(filter.title);
-        // filter.placeholder = pepperi.translations.translate(filter.placeholder);
-        // filter.placeholderWhenNoOptions = pepperi.translations.translate(filter.placeholderWhenNoOptions);
+    async setFilterTranslations(filter: IFilter): Promise<void> {
+        filter.title = await pepperi.translations.translate({ key: filter.title });
+        filter.placeholder = await pepperi.translations.translate({ key: filter.placeholder });
+        filter.placeholderWhenNoOptions = await pepperi.translations.translate({ key: filter.placeholderWhenNoOptions });
     }
 
     async PrepareFiltersData(filters: IFilter[], state: any, context: IContext | undefined): Promise<ICalculatedFilter[]> {

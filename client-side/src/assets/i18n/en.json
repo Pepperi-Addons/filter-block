@@ -24,5 +24,6 @@
     "PLACEHOLDER_WHEN_NO_OPTIONS_TITLE": "Empty values text",
     "ADD_FILTER": "Add filter",
     "MSG_NOTICE_TITLE": "Notice",
-    "MSG_ERROR_GENERAL": "Something went wrong, Please contact your administrator."
+    "MSG_ERROR_GENERAL": "Something went wrong, Please contact your administrator.",
+    "DELETE_FILTER": "Delete"
 }
