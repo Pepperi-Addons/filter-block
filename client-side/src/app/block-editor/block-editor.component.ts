@@ -16,7 +16,10 @@ export class BlockEditorComponent implements OnInit {
     @Input()
     set hostObject(value: IEditorHostObject) {
         if (value && value.configuration && Object.keys(value.configuration).length > 0) {
-            this._configuration = value.configuration
+            // Override only if the configuration is not the same object
+            if (JSON.stringify(this._configuration) !== JSON.stringify(value.configuration)) {
+                this._configuration = value.configuration
+            }
         } else {
             this.loadDefaultConfiguration();
         }
@@ -182,8 +185,6 @@ export class BlockEditorComponent implements OnInit {
     }
 
     onFilterToggle(event: boolean, index: number) {
-        // First toggle the event.
-        event = !event;
         this.currentFilterIndex = event ? index : -1;
     }
 

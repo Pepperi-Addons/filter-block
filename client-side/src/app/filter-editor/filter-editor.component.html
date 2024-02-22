@@ -46,7 +46,8 @@
 </div> -->
 
 <pep-draggable-item titlePrefix="{{ index + 1 }}.&nbsp;" title="{{filter.title || 'UNTITLED' | translate}}" styleType="weak" [toggleContent]="true" 
-    [actionsMenu]="actionsMenu" [shadow]="false" titleClassNames="color-link" (actionsMenuItemClick)="onMenuItemClick($event)">
+    [actionsMenu]="actionsMenu" [shadow]="false" titleClassNames="color-link"  [isToggleContentOpen]="isOpen" 
+    (contentToggle)="onToggle($event)" (actionsMenuItemClick)="onMenuItemClick($event)">
     <ng-container pep-toggle-content>
         <pep-textbox [label]="'TITLE' | translate" [value]="filter.title" 
                     (valueChange)="onFilterFieldChange('title', $event)">

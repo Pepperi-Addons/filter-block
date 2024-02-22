@@ -87,8 +87,8 @@ export class FilterEditorComponent implements OnInit {
         this.removeClick.emit();
     }
 
-    onToggle() {
-        this.toggle.emit(this.isOpen);
+    onToggle(event) {
+        this.toggle.emit(event);
     }
 
     onFilterFieldChange(key, event) {

@@ -6,37 +6,37 @@
     display: block;
 }
 
-.actions {
-    display: inline-flex;
-    gap: ngx-variables.$spacing-xs;
-}
+// .actions {
+//     display: inline-flex;
+//     gap: ngx-variables.$spacing-xs;
+// }
 
-.filter-editor-container {
-    min-height: 2.5rem;
-    width: 100%;
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    padding-top: ngx-variables.$spacing-sm;
-    border-radius: ngx-variables.$border-radius-md;
-    padding-inline: ngx-variables.$spacing-sm;
-    margin-bottom: ngx-variables.$spacing-sm;
-    @include ngx-mixins.state-weak-default();
+// .filter-editor-container {
+//     min-height: 2.5rem;
+//     width: 100%;
+//     display: grid;
+//     grid-template-columns: auto 1fr auto;
+//     padding-top: ngx-variables.$spacing-sm;
+//     border-radius: ngx-variables.$border-radius-md;
+//     padding-inline: ngx-variables.$spacing-sm;
+//     margin-bottom: ngx-variables.$spacing-sm;
+//     @include ngx-mixins.state-weak-default();
 
-    .title-container {
-        margin-top: .15rem;
-        overflow-x: hidden;
-        margin-inline: ngx-variables.$spacing-sm;
+//     .title-container {
+//         margin-top: .15rem;
+//         overflow-x: hidden;
+//         margin-inline: ngx-variables.$spacing-sm;
     
-        .title {
-            display: block;
-        }
-    }
+//         .title {
+//             display: block;
+//         }
+//     }
 
-    .editor-container {
-        padding: ngx-variables.$spacing-md 0;
-        grid-column: 1 / 4;
-        grid-row: 2 / 4;
-        display: grid;
-        gap: ngx-variables.$spacing-lg;
-    }
-}
+//     .editor-container {
+//         padding: ngx-variables.$spacing-md 0;
+//         grid-column: 1 / 4;
+//         grid-row: 2 / 4;
+//         display: grid;
+//         gap: ngx-variables.$spacing-lg;
+//     }
+// }
