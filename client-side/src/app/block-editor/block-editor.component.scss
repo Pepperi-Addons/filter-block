@@ -1,15 +1,9 @@
 @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables' as ngx-variables;
 
-.width-container {
-    pep-checkbox {
-        &.checkbox-as-sub-title {
-            margin-bottom: 0.5rem !important;
-        }
+.page-builder-editor-tabs {
+    .available-filters {
+        display: flex;
+        flex-flow: column;
+        gap: ngx-variables.$spacing-sm;
     }
-}
-
-.available-filters {
-    display: flex;
-    flex-flow: column;
-    gap: ngx-variables.$spacing-sm;
 }

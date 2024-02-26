@@ -1,18 +1,19 @@
 <mat-tab-group #tabGroup class="page-builder-editor-tabs" animationDuration="0ms">
     <mat-tab label="{{'GENERAL_TAB_TITLE' | translate}}">
         <div class="page-builder-editor-tab">
-            <label class="body-sm">{{'GENERAL_SUB_TITLE' | translate}}</label>   
-            <pep-group-buttons-settings 
-                [groupType]="'custom'" [subHeader]="'DIRECTION_TITLE' | translate"
-                [btnKey]="configuration?.direction" [btnsArray]="directionTypes"
-                (btnkeyChange)="onFieldChange('direction', $event)">
-            </pep-group-buttons-settings>
-            
+            <div>
+                <label class="editor-title">{{'LAYOUT' | translate}}</label>   
+                <pep-group-buttons-settings 
+                    [groupType]="'custom'" [subHeader]="'DIRECTION_TITLE' | translate"
+                    [btnKey]="configuration?.direction" [btnsArray]="directionTypes"
+                    (btnkeyChange)="onFieldChange('direction', $event)">
+                </pep-group-buttons-settings>
+            </div>
             <pep-group-buttons-settings [groupType]="'sizes'" [subHeader]="'SPACING_TITLE' | translate"
                 [btnKey]="configuration?.spacing" [excludeKeys]="['xs','2xl']"
                 (btnkeyChange)="onFieldChange('spacing', $event)">
             </pep-group-buttons-settings>
-            <div class="width-container">
+            <div>
                 <pep-checkbox class="checkbox-as-sub-title" [value]="configuration?.limitWidth" [label]="'LIMIT_WIDTH' | translate" [renderTitle]="false" (valueChange)="onFieldChange('limitWidth',$event)"></pep-checkbox>
                 <pep-textbox type="real" [disabled]="!configuration?.limitWidth"
                     [value]="configuration?.maxWidth" [label]="'MAX_WIDTH' | translate" 
